@@ -24,6 +24,7 @@ builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
+var logger = app.Logger;
 
 if (app.Environment.IsDevelopment())
 {
@@ -33,7 +34,6 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    var logger = app.Logger;
     app.UseExceptionHandler(appBuilder => appBuilder.Run(async context =>
     {
         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
@@ -57,6 +57,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await app.SeedAsync(app.Configuration, app.Logger);
+await app.SeedAsync(app.Configuration, logger);
 
 await app.RunAsync();

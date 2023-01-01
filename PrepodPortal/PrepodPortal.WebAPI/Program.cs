@@ -11,17 +11,20 @@ var configuredLogger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(configuredLogger);
 
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.AddDateOnlyConverters());
+builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddConfigurations(builder.Configuration);
 builder.Services.RegisterServices(builder.Configuration);
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJwt(builder.Configuration);
+builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -43,11 +46,17 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseCors(corsPolicyBuilder => corsPolicyBuilder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-await app.SeedAsync();
+await app.SeedAsync(app.Configuration, app.Logger);
 
 await app.RunAsync();

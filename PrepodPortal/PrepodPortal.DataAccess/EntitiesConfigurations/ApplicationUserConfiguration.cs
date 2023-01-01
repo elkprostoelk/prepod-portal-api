@@ -14,5 +14,15 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
         builder.Ignore(user => user.AccessFailedCount);
         builder.Ignore(user => user.PhoneNumberConfirmed);
         builder.Ignore(user => user.TwoFactorEnabled);
+        
+        builder.Property(user => user.Email)
+            .IsRequired();
+        builder.HasIndex(user => user.Email)
+            .IsUnique();
+
+        builder.HasOne(user => user.UserProfile)
+            .WithOne(profile => profile.User)
+            .HasForeignKey<UserProfile>(user => user.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

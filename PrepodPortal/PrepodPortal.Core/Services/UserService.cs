@@ -144,6 +144,21 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<bool> DeleteUserAsync(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            var deletingResult = await _userManager.DeleteAsync(user);
+            return deletingResult.Succeeded;
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return false;
+        }
+    }
+
     private async Task<string> GenerateTokenAsync(ApplicationUser user)
     {
         var key = Encoding.UTF8.GetBytes(_jwtConfiguration.Secret);

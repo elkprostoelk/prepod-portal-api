@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IUserProfileService, UserProfileService>();
         services.AddScoped<IScientometricDbProfileService, ScientometricDbProfileService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();

@@ -45,7 +45,7 @@ namespace PrepodPortal.WebAPI.Controllers
             var validatedUserTokenDto = await _userService.ValidateUserAsync(loginDto);
             return validatedUserTokenDto is not null
                 ? Ok(validatedUserTokenDto)
-                : Unauthorized("Password is invalid!");
+                : Unauthorized("Auth error!");
         }
 
         [HttpPost("new-teacher")]

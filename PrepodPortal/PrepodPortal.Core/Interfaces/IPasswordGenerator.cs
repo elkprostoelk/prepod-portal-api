@@ -2,5 +2,6 @@ namespace PrepodPortal.Core.Interfaces;
 
 public interface IPasswordGenerator
 {
-    public string GeneratePassword(int length, int numberOfNonAlphanumericCharacters);
+    string GeneratePassword(int length, int requiredNumberOfNonAlphanumericCharacters,
+        int requiredNumberOfDigits = 1);
 }

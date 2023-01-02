@@ -19,8 +19,10 @@ public class UserRepository : IUserRepository
         _userManager = userManager;
     }
 
-    public async Task<bool> ExistsAsync(string email) =>
-        await _userManager.Users.AnyAsync(u => u.Email == email);
+    public async Task<bool> ExistsAsync(string idOrEmail, CancellationToken cancellationToken) =>
+        await _userManager.Users
+            .AnyAsync(user => user.Email == idOrEmail
+                        || user.Id == idOrEmail, cancellationToken);
 
     public async Task<ApplicationUser?> GetAsync(string email) =>
         await _userManager.FindByEmailAsync(email);

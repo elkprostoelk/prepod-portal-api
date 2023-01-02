@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
+using PrepodPortal.WebAPI.Extensions;
 
 namespace PrepodPortal.WebAPI.Controllers
 {
@@ -14,16 +15,19 @@ namespace PrepodPortal.WebAPI.Controllers
     {
         private readonly IValidator<LoginDto> _loginValidator;
         private readonly IValidator<NewTeacherDto> _newTeacherValidator;
+        private readonly IValidator<ChangePasswordDto> _changePasswordValidator;
         private readonly IUserService _userService;
 
         public AuthController(
             IValidator<LoginDto> loginValidator,
             IUserService userService,
-            IValidator<NewTeacherDto> newTeacherValidator)
+            IValidator<NewTeacherDto> newTeacherValidator,
+            IValidator<ChangePasswordDto> changePasswordValidator)
         {
             _loginValidator = loginValidator;
             _userService = userService;
             _newTeacherValidator = newTeacherValidator;
+            _changePasswordValidator = changePasswordValidator;
         }
 
         [HttpPost("login")]
@@ -61,6 +65,27 @@ namespace PrepodPortal.WebAPI.Controllers
 
             var registeredTeacher = await _userService.RegisterTeacherAsync(newTeacherDto);
             return registeredTeacher ? StatusCode(201) : Conflict();
+        }
+
+        [HttpPatch("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var validationResult = await _changePasswordValidator.ValidateAsync(changePasswordDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                return BadRequest(ModelState);
+            }
+
+            if (changePasswordDto.UserId != User.GetUserId()
+                && !User.IsInRole("administrator"))
+            {
+                return Forbid();
+            }
+
+            var passwordChanged = await _userService.ChangePasswordAsync(changePasswordDto);
+            return passwordChanged ? Ok() : Conflict();
         }
     }
 }

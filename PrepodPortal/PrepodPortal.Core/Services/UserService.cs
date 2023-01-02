@@ -45,11 +45,11 @@ public class UserService : IUserService
         _jwtConfiguration = jwtConfiguration.Value;
     }
     
-    public async Task<bool> UserExistsAsync(string email)
+    public async Task<bool> UserExistsAsync(string idOrEmail, CancellationToken cancellationToken = default)
     {
         try
         {
-            return await _repository.ExistsAsync(email);
+            return await _repository.ExistsAsync(idOrEmail, cancellationToken);
         }
         catch (Exception e)
         {
@@ -113,6 +113,29 @@ public class UserService : IUserService
                 await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
             }
             return succeeded;
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return false;
+        }
+    }
+
+    public async Task<bool> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(changePasswordDto.UserId);
+            if (user is null)
+            {
+                return false;
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(
+                user,
+                changePasswordDto.CurrentPassword,
+                changePasswordDto.NewPassword);
+            return changePasswordResult.Succeeded;
         }
         catch (Exception e)
         {

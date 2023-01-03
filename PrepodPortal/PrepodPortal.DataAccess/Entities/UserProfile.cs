@@ -22,6 +22,10 @@ public class UserProfile
     
     public string? ScienceDegree { get; set; }
     
+    public string? WorkplaceLocation { get; set; }
+    
+    public string? WorkplacePosition { get; set; }
+    
     public long DepartmentId { get; set; }
     
     public string AvatarImagePath { get; set; }

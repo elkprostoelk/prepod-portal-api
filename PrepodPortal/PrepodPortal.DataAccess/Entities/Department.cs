@@ -6,5 +6,5 @@ public class Department
     
     public string Title { get; set; }
     
-    public ICollection<UserProfile>? UserProfiles { get; set; }
+    public ICollection<ApplicationUser>? Users { get; set; }
 }

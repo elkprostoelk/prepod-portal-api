@@ -8,7 +8,7 @@ public class ScientometricDbProfile
     
     public string ProfileLink { get; set; }
     
-    public long UserProfileId { get; set; }
+    public string UserId { get; set; }
     
-    public UserProfile? UserProfile { get; set; }
+    public ApplicationUser? User { get; set; }
 }

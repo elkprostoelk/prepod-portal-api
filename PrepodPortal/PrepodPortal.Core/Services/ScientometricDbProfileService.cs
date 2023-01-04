@@ -24,12 +24,12 @@ public class ScientometricDbProfileService : IScientometricDbProfileService
     }
     
     public async Task<bool> AddProfilesAsync(ICollection<NewScientometricDbProfileDto> scientometricDbProfiles,
-        long userProfileId)
+        string userId)
     {
         try
         {
             var profiles = _mapper.Map<ICollection<ScientometricDbProfile>>(scientometricDbProfiles);
-            profiles.ToList().ForEach(profile => profile.UserProfileId = userProfileId);
+            profiles.ToList().ForEach(profile => profile.UserId = userId);
             return await _repository.AddRangeAsync(profiles);
         }
         catch (Exception e)

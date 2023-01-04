@@ -8,8 +8,6 @@ namespace PrepodPortal.DataAccess;
 
 public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
 {
-    public DbSet<UserProfile> UserProfiles { get; set; }
-    
     public DbSet<Department> Departments { get; set; }
     
     public DbSet<ScientometricDbProfile> ScientometricDbProfiles { get; set; }

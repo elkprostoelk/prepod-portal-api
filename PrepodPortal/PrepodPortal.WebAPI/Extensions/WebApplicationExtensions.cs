@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using PrepodPortal.Common.Configurations;
 using PrepodPortal.Common.Enums;
 using PrepodPortal.DataAccess;
@@ -31,23 +30,17 @@ public static class WebApplicationExtensions
         var admin = new ApplicationUser
         {
             Email = adminConfig.Email,
-            UserName = adminConfig.Email
+            UserName = adminConfig.Email,
+            Name = "Admin",
+            AvatarImagePath = "/Images/no-avatar.png",
+            DepartmentId = 31,
+            Gender = Gender.Male
         };
         var adminCreatingResult = await userManager.CreateAsync(admin, adminConfig.Password);
         var addingToRoleResult = await userManager.AddToRoleAsync(admin, "administrator");
         if (adminCreatingResult.Succeeded && addingToRoleResult.Succeeded)
         {
             logger.LogInformation("Admin user was created successfully");
-            admin.UserProfile = new UserProfile
-            {
-                UserId = admin.Id,
-                Name = "Admin",
-                AvatarImagePath = "/Images/no-avatar.png",
-                DepartmentId = 31,
-                Gender = Gender.Male
-            };
-            dbContext.Users.Update(admin);
-            await dbContext.SaveChangesAsync();
         }
         else
         {

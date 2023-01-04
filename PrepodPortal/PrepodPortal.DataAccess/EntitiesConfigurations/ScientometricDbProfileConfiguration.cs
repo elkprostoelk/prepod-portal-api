@@ -14,8 +14,8 @@ public class ScientometricDbProfileConfiguration : IEntityTypeConfiguration<Scie
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.HasOne(dbProfile => dbProfile.UserProfile)
-            .WithMany(profile => profile.ScientometricDbProfiles)
-            .HasForeignKey(dbProfile => dbProfile.UserProfileId);
+        builder.Property(dbProfile => dbProfile.ProfileLink)
+            .IsRequired()
+            .HasMaxLength(100);
     }
 }

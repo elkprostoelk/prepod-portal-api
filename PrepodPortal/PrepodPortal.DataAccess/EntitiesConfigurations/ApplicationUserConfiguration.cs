@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PrepodPortal.Common.Enums;
 using PrepodPortal.DataAccess.Entities;
 
 namespace PrepodPortal.DataAccess.EntitiesConfigurations;
@@ -20,9 +21,42 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
         builder.HasIndex(user => user.Email)
             .IsUnique();
 
-        builder.HasOne(user => user.UserProfile)
-            .WithOne(profile => profile.User)
-            .HasForeignKey<UserProfile>(user => user.UserId)
+        builder.Property(profile => profile.BirthDate)
+            .IsRequired(false);
+
+        builder.HasOne(profile => profile.Department)
+            .WithMany(department => department.Users)
+            .HasForeignKey(profile => profile.DepartmentId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(user => user.ScientometricDbProfiles)
+            .WithOne(dbProfile => dbProfile.User)
+            .HasForeignKey(dbProfile => dbProfile.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(profile => profile.Town)
+            .HasMaxLength(50);
+        
+        builder.Property(profile => profile.HomeTown)
+            .HasMaxLength(50);
+
+        builder.Property(profile => profile.Gender)
+            .IsRequired()
+            .HasDefaultValue(Gender.Male);
+
+        builder.Property(profile => profile.AcademicTitle)
+            .HasMaxLength(100);
+        
+        builder.Property(profile => profile.ScienceDegree)
+            .HasMaxLength(100);
+
+        builder.Property(profile => profile.WorkplaceLocation)
+            .HasMaxLength(100);
+        
+        builder.Property(profile => profile.WorkplacePosition)
+            .HasMaxLength(100);
+
+        builder.Property(profile => profile.AvatarImagePath)
+            .IsRequired();
     }
 }

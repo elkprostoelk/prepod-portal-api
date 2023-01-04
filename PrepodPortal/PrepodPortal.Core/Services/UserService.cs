@@ -20,7 +20,6 @@ public class UserService : IUserService
     private readonly IUserRepository _repository;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtConfiguration _jwtConfiguration;
-    private readonly IUserProfileRepository _userProfileRepository;
     private readonly IScientometricDbProfileService _scientometricDbProfileService;
     private readonly IEmailService _emailService;
 
@@ -30,7 +29,6 @@ public class UserService : IUserService
         IUserRepository repository,
         UserManager<ApplicationUser> userManager,
         IOptions<JwtConfiguration> jwtConfiguration,
-        IUserProfileRepository userProfileRepository,
         IScientometricDbProfileService scientometricDbProfileService,
         IEmailService emailService
         )
@@ -39,7 +37,6 @@ public class UserService : IUserService
         _logger = logger;
         _repository = repository;
         _userManager = userManager;
-        _userProfileRepository = userProfileRepository;
         _scientometricDbProfileService = scientometricDbProfileService;
         _emailService = emailService;
         _jwtConfiguration = jwtConfiguration.Value;
@@ -85,7 +82,11 @@ public class UserService : IUserService
             var newUser = new ApplicationUser
             {
                 UserName = newTeacherDto.Email,
-                Email = newTeacherDto.Email
+                Email = newTeacherDto.Email,
+                Name = newTeacherDto.Name,
+                DepartmentId = newTeacherDto.DepartmentId,
+                ScientometricDbProfiles = new List<ScientometricDbProfile>(),
+                AvatarImagePath = "/Images/no-avatar.png"
             };
             var creationResult = await _userManager.CreateAsync(newUser, password);
             var succeeded = creationResult.Succeeded;
@@ -93,20 +94,10 @@ public class UserService : IUserService
             {
                 var roleCreationResult = await _userManager.AddToRoleAsync(newUser, "user");
                 succeeded = succeeded && roleCreationResult.Succeeded;
-                var userProfile = new UserProfile
-                {
-                    UserId = newUser.Id,
-                    Name = newTeacherDto.Name,
-                    DepartmentId = newTeacherDto.DepartmentId,
-                    ScientometricDbProfiles = new List<ScientometricDbProfile>(),
-                    AvatarImagePath = "/Images/no-avatar.png"
-                };
-                var userProfileAdded = await _userProfileRepository.AddAsync(userProfile);
-                succeeded = succeeded && userProfileAdded;
                 var scientometricDbProfilesAdded = await _scientometricDbProfileService
                     .AddProfilesAsync(
                         newTeacherDto.ScientometricDbProfiles,
-                        userProfile.Id
+                        newUser.Id
                     );
                 succeeded = succeeded && scientometricDbProfilesAdded;
                 Directory.CreateDirectory($"{Environment.CurrentDirectory}/Users/{newTeacherDto.Email}/avatar");

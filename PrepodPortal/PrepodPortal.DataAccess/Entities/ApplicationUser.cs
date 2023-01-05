@@ -13,7 +13,7 @@ public class ApplicationUser : IdentityUser
     
     public Gender Gender { get; set; }
     
-    public DateOnly? BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
     
     public string? AcademicTitle { get; set; }
     

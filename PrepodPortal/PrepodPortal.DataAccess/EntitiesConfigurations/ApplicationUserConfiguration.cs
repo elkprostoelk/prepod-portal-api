@@ -22,7 +22,8 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .IsUnique();
 
         builder.Property(profile => profile.BirthDate)
-            .IsRequired(false);
+            .IsRequired(false)
+            .HasColumnType("date");
 
         builder.HasOne(profile => profile.Department)
             .WithMany(department => department.Users)

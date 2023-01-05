@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +42,26 @@ namespace PrepodPortal.WebAPI.Controllers
 
             var added = await _service.AddAcademicDegreeAsync(newAcademicDegreeDto);
             return added ? StatusCode(201) : Conflict();
+        }
+
+        [HttpDelete("{id:long}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAcademicDegree(long id)
+        {
+            var degree = await _service.GetAsync(id);
+            if (degree is null)
+            {
+                return NotFound();
+            }
+
+            if (User.GetUserId() != degree.UserId
+                && !User.IsInRole("administrator"))
+            {
+                return Forbid();
+            }
+
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : Conflict();
         }
     }
 }

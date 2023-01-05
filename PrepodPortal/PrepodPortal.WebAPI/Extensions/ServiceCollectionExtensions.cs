@@ -32,11 +32,13 @@ public static class ServiceCollectionExtensions
             opts.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAcademicDegreeRepository, AcademicDegreeRepository>();
         services.AddScoped<IScientometricDbProfileRepository, ScientometricDbProfileRepository>();
         
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAcademicDegreeService, AcademicDegreeService>();
         services.AddScoped<IScientometricDbProfileService, ScientometricDbProfileService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();

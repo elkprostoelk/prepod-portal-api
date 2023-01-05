@@ -36,4 +36,39 @@ public class AcademicDegreeService : IAcademicDegreeService
             return false;
         }
     }
+
+    public async Task<AcademicDegreeDto?> GetAsync(long id)
+    {
+        try
+        {
+            var academicDegree = await _repository.GetAsync(id);
+            return academicDegree is null
+                ? null
+                : _mapper.Map<AcademicDegreeDto>(academicDegree);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return null;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(long id)
+    {
+        try
+        {
+            var academicDegree = await _repository.GetAsync(id);
+            if (academicDegree is null)
+            {
+                return false;
+            }
+            
+            return await _repository.RemoveAsync(academicDegree);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return false;
+        }
+    }
 }

@@ -11,6 +11,8 @@ public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
     
     public DbSet<ScientometricDbProfile> ScientometricDbProfiles { get; set; }
     
+    public DbSet<AcademicDegree> AcademicDegrees { get; set; }
+    
     public PrepodPortalDbContext(DbContextOptions<PrepodPortalDbContext> options)
         : base(options)
     {

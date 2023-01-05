@@ -29,6 +29,8 @@ public class ApplicationUser : IdentityUser
     
     public ICollection<ScientometricDbProfile>? ScientometricDbProfiles { get; set; }
     
+    public ICollection<AcademicDegree>? AcademicDegrees { get; set; }
+    
     public ApplicationUser? User { get; set; }
     
     public Department? Department { get; set; }

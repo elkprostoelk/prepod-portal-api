@@ -34,12 +34,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAcademicDegreeRepository, AcademicDegreeRepository>();
         services.AddScoped<IScientometricDbProfileRepository, ScientometricDbProfileRepository>();
+        services.AddScoped<IEducationRepository, EducationRepository>();
         
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAcademicDegreeService, AcademicDegreeService>();
         services.AddScoped<IScientometricDbProfileService, ScientometricDbProfileService>();
+        services.AddScoped<IEducationService, EducationService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddSingleton<IHtmlSanitizer>(_ => new HtmlSanitizer());

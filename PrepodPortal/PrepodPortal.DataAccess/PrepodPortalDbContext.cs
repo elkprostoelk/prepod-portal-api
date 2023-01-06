@@ -13,6 +13,8 @@ public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
     
     public DbSet<AcademicDegree> AcademicDegrees { get; set; }
     
+    public DbSet<Education> Educations { get; set; }
+
     public PrepodPortalDbContext(DbContextOptions<PrepodPortalDbContext> options)
         : base(options)
     {

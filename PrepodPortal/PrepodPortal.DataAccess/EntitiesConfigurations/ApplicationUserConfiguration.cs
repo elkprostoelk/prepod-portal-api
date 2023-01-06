@@ -40,6 +40,11 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasForeignKey(degree => degree.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(user => user.Educations)
+            .WithOne(education => education.User)
+            .HasForeignKey(education => education.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(profile => profile.Town)
             .HasMaxLength(50);
         

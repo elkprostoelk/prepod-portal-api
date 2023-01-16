@@ -45,6 +45,23 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasForeignKey(education => education.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(user => user.Publications)
+            .WithMany(publication => publication.Authors)
+            .UsingEntity<UserPublication>(
+                userPublicationBuilder => userPublicationBuilder.HasOne(userPublication => userPublication.Publication)
+                    .WithMany(publication => publication.UserPublications)
+                    .HasForeignKey(userPublication => userPublication.PublicationId),
+                userPublicationBuilder => userPublicationBuilder.HasOne(userPublication => userPublication.User)
+                    .WithMany(user => user.UserPublications)
+                    .HasForeignKey(userPublication => userPublication.UserId),
+                userPublicationBuilder =>
+                    {
+                        userPublicationBuilder.HasKey(userPublication =>
+                            new { userPublication.UserId, userPublication.PublicationId });
+
+                        userPublicationBuilder.ToTable("UserPublications");
+                    });
+
         builder.Property(profile => profile.Town)
             .HasMaxLength(50);
         

@@ -32,8 +32,10 @@ public class ApplicationUser : IdentityUser
     public ICollection<AcademicDegree>? AcademicDegrees { get; set; }
     
     public ICollection<Education> Educations { get; set; }
-
-    public ApplicationUser? User { get; set; }
     
+    public ICollection<Publication> Publications { get; set; }
+    
+    public ICollection<UserPublication> UserPublications { get; set; }
+
     public Department? Department { get; set; }
 }

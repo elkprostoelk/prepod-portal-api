@@ -35,6 +35,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAcademicDegreeRepository, AcademicDegreeRepository>();
         services.AddScoped<IScientometricDbProfileRepository, ScientometricDbProfileRepository>();
         services.AddScoped<IEducationRepository, EducationRepository>();
+        services.AddScoped<IPublicationRepository, PublicationRepository>();
+        services.AddScoped<IArticleRepository, ArticleRepository>();
         
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
@@ -42,6 +44,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAcademicDegreeService, AcademicDegreeService>();
         services.AddScoped<IScientometricDbProfileService, ScientometricDbProfileService>();
         services.AddScoped<IEducationService, EducationService>();
+        services.AddScoped<IPublicationService, PublicationService>();
+        services.AddScoped<IArticleService, ArticleService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddSingleton<IHtmlSanitizer>(_ => new HtmlSanitizer());

@@ -9,5 +9,8 @@ public class AutoMapperProfile : Profile
     public AutoMapperProfile()
     {
         CreateMap<NewScientometricDbProfileDto, ScientometricDbProfile>();
+        CreateMap<NewArticleDto, Article>()
+            .ForMember(article => article.Authors,
+                options => options.Ignore());
     }
 }

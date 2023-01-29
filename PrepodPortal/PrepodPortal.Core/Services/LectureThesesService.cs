@@ -8,16 +8,16 @@ using PrepodPortal.DataAccess.Interfaces;
 
 namespace PrepodPortal.Core.Services;
 
-public class MonographService : IMonographService
+public class LectureThesesService : ILectureThesesService
 {
-    private readonly IMonographRepository _repository;
-    private readonly ILogger<MonographService> _logger;
+    private readonly ILectureThesesRepository _repository;
+    private readonly ILogger<LectureThesesService> _logger;
     private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public MonographService(
-        IMonographRepository repository,
-        ILogger<MonographService> logger,
+    public LectureThesesService(
+        ILectureThesesRepository repository,
+        ILogger<LectureThesesService> logger,
         IMapper mapper,
         UserManager<ApplicationUser> userManager)
     {
@@ -27,13 +27,13 @@ public class MonographService : IMonographService
         _userManager = userManager;
     }
     
-    public async Task<bool> AddMonographAsync(NewMonographDto newMonographDto)
+    public async Task<bool> AddLectureThesesAsync(NewLectureThesesDto newLectureThesesDto)
     {
         try
         {
-            var monograph = _mapper.Map<Monograph>(newMonographDto);
+            var monograph = _mapper.Map<LectureTheses>(newLectureThesesDto);
             monograph.Authors = new List<ApplicationUser>();
-            foreach (var id in newMonographDto.AuthorsIds)
+            foreach (var id in newLectureThesesDto.AuthorsIds)
             {
                 monograph.Authors.Add(await _userManager.FindByIdAsync(id));
             }

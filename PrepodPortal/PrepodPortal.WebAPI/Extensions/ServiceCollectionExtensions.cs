@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPublicationRepository, PublicationRepository>();
         services.AddScoped<IArticleRepository, ArticleRepository>();
         services.AddScoped<IMonographRepository, MonographRepository>();
+        services.AddScoped<ILectureThesesRepository, LectureThesesRepository>();
         
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
@@ -48,6 +49,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPublicationService, PublicationService>();
         services.AddScoped<IArticleService, ArticleService>();
         services.AddScoped<IMonographService, MonographService>();
+        services.AddScoped<ILectureThesesService, LectureThesesService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddSingleton<IHtmlSanitizer>(_ => new HtmlSanitizer());

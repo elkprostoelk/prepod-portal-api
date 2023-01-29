@@ -49,7 +49,7 @@ namespace PrepodPortal.WebAPI.Controllers
         
         [HttpPost("add-csv")]
         [Authorize]
-        public async Task<IActionResult> AddArticlesWithCsv(AddPublicationsWithCsvDto addPublicationsWithCsvDto)
+        public async Task<IActionResult> AddArticlesWithCsv([FromForm] AddPublicationsWithCsvDto addPublicationsWithCsvDto)
         {
             var validationResult = await _addPublicationsWithCsvValidator.ValidateAsync(addPublicationsWithCsvDto);
             if (!validationResult.IsValid)

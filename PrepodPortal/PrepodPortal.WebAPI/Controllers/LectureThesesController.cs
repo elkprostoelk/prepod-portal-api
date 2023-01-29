@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;

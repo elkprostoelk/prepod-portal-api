@@ -16,6 +16,6 @@ public class AddPublicationsWithCsvDtoValidator : AbstractValidator<AddPublicati
         RuleFor(dto => dto.CsvFile)
             .NotEmpty()
             .MustBeOfSpecifiedFileTypes("csv")
-            .MaximumFileSize(5120);
+            .MaximumFileSize(5242880);
     }
 }

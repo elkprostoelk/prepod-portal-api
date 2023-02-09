@@ -4,5 +4,5 @@ namespace PrepodPortal.Core.Interfaces;
 
 public interface ISchoolBookService
 {
-    Task<bool> AddSchoolBookAsync(NewSchoolBookDto newSchoolBookDto);
+    Task<ServiceResult<long>> AddSchoolBookAsync(NewSchoolBookDto newSchoolBookDto);
 }

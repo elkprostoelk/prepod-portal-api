@@ -23,18 +23,33 @@ public class EducationService : IEducationService
         _repository = repository;
     }
     
-    public async Task<bool> AddAsync(NewEducationDto newEducationDto)
+    public async Task<ServiceResult<long>> AddAsync(NewEducationDto newEducationDto)
     {
+        const string commonError = "Failed to add an education";
+        var result = new ServiceResult<long>();
         try
         {
             var education = _mapper.Map<Education>(newEducationDto);
-            return await _repository.AddAsync(education);
+            var added = await _repository.AddAsync(education);
+            if (added)
+            {
+                result.Container = education.Id;
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 
     public async Task<EducationDto?> GetAsync(long id)
@@ -51,21 +66,34 @@ public class EducationService : IEducationService
         }
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<ServiceResult> DeleteAsync(long id)
     {
+        var result = new ServiceResult();
         try
         {
             var education = await _repository.GetAsync(id);
             if (education is null)
             {
-                return false;
+                result.IsSuccessful = false;
+                result.Errors.Add("Education was not found");
             }
-            return await _repository.RemoveAsync(education);
+            else
+            {
+                var deleted = await _repository.RemoveAsync(education);
+                if (!deleted)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add($"Failed to delete the education {id}");
+                }
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

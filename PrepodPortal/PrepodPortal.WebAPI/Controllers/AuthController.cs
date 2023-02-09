@@ -37,10 +37,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return NotFound($"User {loginDto.Email} was not found!");
             }
         
-            var validatedUserTokenDto = await _userService.ValidateUserAsync(loginDto);
-            return validatedUserTokenDto is not null
-                ? Ok(validatedUserTokenDto)
-                : Unauthorized("Auth error!");
+            var result = await _userService.ValidateUserAsync(loginDto);
+            return result.IsSuccessful
+                ? Ok(result)
+                : Unauthorized(result.Errors);
         }
     }
 }

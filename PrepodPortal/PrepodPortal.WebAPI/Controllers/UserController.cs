@@ -37,8 +37,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var registeredTeacher = await _service.RegisterTeacherAsync(newTeacherDto);
-            return registeredTeacher ? StatusCode(201) : Conflict();
+            var result = await _service.RegisterTeacherAsync(newTeacherDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(new { errors = result.Errors });
         }
 
         [HttpPatch("change-password")]
@@ -58,8 +60,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var passwordChanged = await _service.ChangePasswordAsync(changePasswordDto);
-            return passwordChanged ? Ok() : Conflict();
+            var result = await _service.ChangePasswordAsync(changePasswordDto);
+            return result.IsSuccessful
+                ? Ok()
+                : BadRequest(new { errors = result.Errors });
         }
 
         [HttpDelete("{id}")]
@@ -76,8 +80,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var deleted = await _service.DeleteUserAsync(id);
-            return deleted ? NoContent() : Conflict();
+            var result = await _service.DeleteUserAsync(id);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(new { errors = result.Errors });
         }
     }
 }

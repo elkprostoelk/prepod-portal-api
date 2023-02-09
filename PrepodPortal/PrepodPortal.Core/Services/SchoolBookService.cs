@@ -27,8 +27,10 @@ public class SchoolBookService : ISchoolBookService
         _userManager = userManager;
     }
     
-    public async Task<bool> AddSchoolBookAsync(NewSchoolBookDto newSchoolBookDto)
+    public async Task<ServiceResult<long>> AddSchoolBookAsync(NewSchoolBookDto newSchoolBookDto)
     {
+        var result = new ServiceResult<long>();
+        const string commonError = "Failed to delete a publication";
         try
         {
             var schoolBook = _mapper.Map<SchoolBook>(newSchoolBookDto);
@@ -37,12 +39,25 @@ public class SchoolBookService : ISchoolBookService
             {
                 schoolBook.Authors.Add(await _userManager.FindByIdAsync(id));
             }
-            return await _repository.AddAsync(schoolBook);
+            var added = await _repository.AddAsync(schoolBook);
+            if (added)
+            {
+                result.Container = schoolBook.Id;
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

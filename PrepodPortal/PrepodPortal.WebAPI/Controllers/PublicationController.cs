@@ -26,8 +26,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return NotFound();
             }
 
-            var deleted = await _service.DeleteAsync(id);
-            return deleted ? NoContent() : Conflict();
+            var result = await _service.DeleteAsync(id);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(result.Errors);
         }
     }
 }

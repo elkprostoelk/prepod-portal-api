@@ -40,8 +40,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddMonographAsync(newMonographDto);
-            return added ? Ok() : Conflict();
+            var result = await _service.AddMonographAsync(newMonographDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(result.Errors);
         }
     }
 }

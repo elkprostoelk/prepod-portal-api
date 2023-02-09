@@ -43,8 +43,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddArticleAsync(newArticleDto);
-            return added ? Ok() : Conflict();
+            var result = await _service.AddArticleAsync(newArticleDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(new { errors = result.Errors });
         }
         
         [HttpPost("add-csv")]
@@ -64,8 +66,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddArticlesWithCsvFileAsync(addPublicationsWithCsvDto);
-            return added ? Ok() : Conflict();
+            var result = await _service.AddArticlesWithCsvFileAsync(addPublicationsWithCsvDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(new { errors = result.Errors });
         }
     }
 }

@@ -5,8 +5,8 @@ namespace PrepodPortal.Core.Interfaces;
 public interface IUserService
 {
     Task<bool> UserExistsAsync(string idOrEmail, CancellationToken cancellationToken = default);
-    Task<UserTokenDto?> ValidateUserAsync(LoginDto loginDto);
-    Task<bool> RegisterTeacherAsync(NewTeacherDto newTeacherDto);
-    Task<bool> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
-    Task<bool> DeleteUserAsync(string id);
+    Task<ServiceResult<UserTokenDto>> ValidateUserAsync(LoginDto loginDto);
+    Task<ServiceResult<string>> RegisterTeacherAsync(NewTeacherDto newTeacherDto);
+    Task<ServiceResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
+    Task<ServiceResult> DeleteUserAsync(string id);
 }

@@ -4,5 +4,5 @@ namespace PrepodPortal.Core.Interfaces;
 
 public interface IMonographService
 {
-    Task<bool> AddMonographAsync(NewMonographDto newMonographDto);
+    Task<ServiceResult<long>> AddMonographAsync(NewMonographDto newMonographDto);
 }

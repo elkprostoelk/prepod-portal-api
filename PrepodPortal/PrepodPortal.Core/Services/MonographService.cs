@@ -27,8 +27,10 @@ public class MonographService : IMonographService
         _userManager = userManager;
     }
     
-    public async Task<bool> AddMonographAsync(NewMonographDto newMonographDto)
+    public async Task<ServiceResult<long>> AddMonographAsync(NewMonographDto newMonographDto)
     {
+        var result = new ServiceResult<long>();
+        const string commonError = "Failed to add a monograph";
         try
         {
             var monograph = _mapper.Map<Monograph>(newMonographDto);
@@ -37,12 +39,25 @@ public class MonographService : IMonographService
             {
                 monograph.Authors.Add(await _userManager.FindByIdAsync(id));
             }
-            return await _repository.AddAsync(monograph);
+            var added = await _repository.AddAsync(monograph);
+            if (added)
+            {
+                result.Container = monograph.Id;
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

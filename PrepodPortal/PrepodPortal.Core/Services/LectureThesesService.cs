@@ -27,22 +27,37 @@ public class LectureThesesService : ILectureThesesService
         _userManager = userManager;
     }
     
-    public async Task<bool> AddLectureThesesAsync(NewLectureThesesDto newLectureThesesDto)
+    public async Task<ServiceResult<long>> AddLectureThesesAsync(NewLectureThesesDto newLectureThesesDto)
     {
+        var result = new ServiceResult<long>();
+        const string commonError = "Failed to add lecture theses";
         try
         {
-            var monograph = _mapper.Map<LectureTheses>(newLectureThesesDto);
-            monograph.Authors = new List<ApplicationUser>();
+            var lectureTheses = _mapper.Map<LectureTheses>(newLectureThesesDto);
+            lectureTheses.Authors = new List<ApplicationUser>();
             foreach (var id in newLectureThesesDto.AuthorsIds)
             {
-                monograph.Authors.Add(await _userManager.FindByIdAsync(id));
+                lectureTheses.Authors.Add(await _userManager.FindByIdAsync(id));
             }
-            return await _repository.AddAsync(monograph);
+            var added = await _repository.AddAsync(lectureTheses);
+            if (added)
+            {
+                result.Container = lectureTheses.Id;
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

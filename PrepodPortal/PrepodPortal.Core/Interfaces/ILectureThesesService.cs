@@ -4,5 +4,5 @@ namespace PrepodPortal.Core.Interfaces;
 
 public interface ILectureThesesService
 {
-    Task<bool> AddLectureThesesAsync(NewLectureThesesDto newLectureThesesDto);
+    Task<ServiceResult<long>> AddLectureThesesAsync(NewLectureThesesDto newLectureThesesDto);
 }

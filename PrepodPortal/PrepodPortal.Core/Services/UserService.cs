@@ -55,27 +55,49 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<UserTokenDto?> ValidateUserAsync(LoginDto loginDto)
+    public async Task<ServiceResult<UserTokenDto>> ValidateUserAsync(LoginDto loginDto)
     {
+        var result = new ServiceResult<UserTokenDto>();
         try
         {
             var user = await _repository.GetAsync(loginDto.Email);
             if (user is null)
             {
-                return null;
+                result.IsSuccessful = false;
+                result.Errors.Add($"User {loginDto.Email} was not found!");
             }
-            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
-            return passwordValid ? new UserTokenDto {Jwt = await GenerateTokenAsync(user)} : null;
+            else
+            {
+                var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+                if (passwordValid)
+                {
+                    result.Container = new UserTokenDto
+                    {
+                        Jwt = await GenerateTokenAsync(user)
+                    };
+                }
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add("Invalid password!");
+                }
+            }
+            
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return null;
+            result.IsSuccessful = false;
+            result.Errors.Add("Failed to validate the user!");
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 
-    public async Task<bool> RegisterTeacherAsync(NewTeacherDto newTeacherDto)
+    public async Task<ServiceResult<string>> RegisterTeacherAsync(NewTeacherDto newTeacherDto)
     {
+        var result = new ServiceResult<string>();
         try
         {
             var password = _passwordGenerator.GeneratePassword(8, 2);
@@ -89,65 +111,118 @@ public class UserService : IUserService
                 AvatarImagePath = "/Images/no-avatar.png"
             };
             var creationResult = await _userManager.CreateAsync(newUser, password);
-            var succeeded = creationResult.Succeeded;
-            if (succeeded)
+            result.IsSuccessful = creationResult.Succeeded;
+            if (result.IsSuccessful)
             {
                 var roleCreationResult = await _userManager.AddToRoleAsync(newUser, "user");
-                succeeded = succeeded && roleCreationResult.Succeeded;
-                var scientometricDbProfilesAdded = await _scientometricDbProfileService
-                    .AddProfilesAsync(
-                        newTeacherDto.ScientometricDbProfiles,
-                        newUser.Id
-                    );
-                succeeded = succeeded && scientometricDbProfilesAdded;
-                Directory.CreateDirectory($"{Environment.CurrentDirectory}/Users/{newTeacherDto.Email}/avatar");
-                await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
+                result.IsSuccessful = result.IsSuccessful && roleCreationResult.Succeeded;
+                if (result.IsSuccessful)
+                {
+                    var scientometricDbProfilesAddingResult = await _scientometricDbProfileService
+                        .AddProfilesAsync(
+                            newTeacherDto.ScientometricDbProfiles,
+                            newUser.Id
+                        );
+                    result.IsSuccessful = result.IsSuccessful && scientometricDbProfilesAddingResult.IsSuccessful;
+                    if (result.IsSuccessful)
+                    {
+                        Directory.CreateDirectory($"{Environment.CurrentDirectory}/Users/{newTeacherDto.Email}/avatar");
+                        await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
+                    }
+                    else
+                    {
+                        result.Errors.Add("Failed to add scientometric DB profiles");
+                    }
+                }
+                else
+                {
+                    result.Errors.Add("Failed to add the user to a role!");
+                }
             }
-            return succeeded;
+            else
+            {
+                result.Errors.Add("Failed to create a user!");
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add("Failed to register a teacher!");
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 
-    public async Task<bool> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
+    public async Task<ServiceResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
     {
+        var result = new ServiceResult();
+        const string commonError = "Failed to change the password!";
         try
         {
             var user = await _userManager.FindByIdAsync(changePasswordDto.UserId);
             if (user is null)
             {
-                return false;
+                result.IsSuccessful = false;
+                result.Errors.Add("User does not exist!");
             }
-
-            var changePasswordResult = await _userManager.ChangePasswordAsync(
-                user,
-                changePasswordDto.CurrentPassword,
-                changePasswordDto.NewPassword);
-            return changePasswordResult.Succeeded;
+            else
+            {
+                var changePasswordResult = await _userManager.ChangePasswordAsync(
+                    user,
+                    changePasswordDto.CurrentPassword,
+                    changePasswordDto.NewPassword);
+                if (!changePasswordResult.Succeeded)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add(commonError);
+                }
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 
-    public async Task<bool> DeleteUserAsync(string id)
+    public async Task<ServiceResult> DeleteUserAsync(string id)
     {
+        var result = new ServiceResult();
+        const string commonError = "Failed to delete a user!";
         try
         {
             var user = await _userManager.FindByIdAsync(id);
-            var deletingResult = await _userManager.DeleteAsync(user);
-            return deletingResult.Succeeded;
+            if (user is null)
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add("User does not exist!");
+            }
+            else
+            {
+                var deletingResult = await _userManager.DeleteAsync(user);
+                if (!deletingResult.Succeeded)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add(commonError);
+                }
+            }
+            
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 
     private async Task<string> GenerateTokenAsync(ApplicationUser user)

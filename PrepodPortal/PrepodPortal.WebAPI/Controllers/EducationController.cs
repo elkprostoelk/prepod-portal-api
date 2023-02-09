@@ -40,8 +40,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddAsync(newEducationDto);
-            return added ? StatusCode(201) : Conflict();
+            var result = await _service.AddAsync(newEducationDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(new { errors = result.Errors });
         }
 
         [HttpDelete("{id:long}")]
@@ -60,8 +62,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var deleted = await _service.DeleteAsync(id);
-            return deleted ? NoContent() : Conflict();
+            var result = await _service.DeleteAsync(id);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(new { errors = result.Errors });
         }
     }
 }

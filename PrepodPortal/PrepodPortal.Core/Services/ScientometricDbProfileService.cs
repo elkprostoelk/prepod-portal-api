@@ -23,19 +23,34 @@ public class ScientometricDbProfileService : IScientometricDbProfileService
         _repository = repository;
     }
     
-    public async Task<bool> AddProfilesAsync(ICollection<NewScientometricDbProfileDto> scientometricDbProfiles,
+    public async Task<ServiceResult<ICollection<long>>> AddProfilesAsync(ICollection<NewScientometricDbProfileDto> scientometricDbProfiles,
         string userId)
     {
+        const string commonError = "Failed to add scientometric DB profiles!";
+        var result = new ServiceResult<ICollection<long>>();
         try
         {
             var profiles = _mapper.Map<ICollection<ScientometricDbProfile>>(scientometricDbProfiles);
             profiles.ToList().ForEach(profile => profile.UserId = userId);
-            return await _repository.AddRangeAsync(profiles);
+            var added = await _repository.AddRangeAsync(profiles);
+            if (added)
+            {
+                result.Container = profiles.Select(profile => profile.Id).ToList();
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

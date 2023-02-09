@@ -23,18 +23,32 @@ public class AcademicDegreeService : IAcademicDegreeService
         _repository = repository;
     }
     
-    public async Task<bool> AddAcademicDegreeAsync(NewAcademicDegreeDto newAcademicDegreeDto)
+    public async Task<ServiceResult<long>> AddAcademicDegreeAsync(NewAcademicDegreeDto newAcademicDegreeDto)
     {
+        const string commonError = "Failed to add an academic degree!";
+        var result = new ServiceResult<long>();
         try
         {
             var academicDegree = _mapper.Map<AcademicDegree>(newAcademicDegreeDto);
-            return await _repository.AddAsync(academicDegree);
+            var added = await _repository.AddAsync(academicDegree);
+            result.IsSuccessful = added;
+            if (added)
+            {
+                result.Container = academicDegree.Id;
+            }
+            else
+            {
+                result.Errors.Add(commonError);
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+        return result;
     }
 
     public async Task<AcademicDegreeDto?> GetAsync(long id)
@@ -53,22 +67,35 @@ public class AcademicDegreeService : IAcademicDegreeService
         }
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<ServiceResult> DeleteAsync(long id)
     {
+        const string commonError = "Failed to delete an academic degree!";
+        var result = new ServiceResult();
         try
         {
             var academicDegree = await _repository.GetAsync(id);
             if (academicDegree is null)
             {
-                return false;
+                result.IsSuccessful = false;
+                result.Errors.Add("The academic degree does not exist!");
             }
-            
-            return await _repository.RemoveAsync(academicDegree);
+            else
+            {
+                var isRemoved = await _repository.RemoveAsync(academicDegree);
+                result.IsSuccessful = isRemoved;
+                if (!isRemoved)
+                {
+                    result.Errors.Add(commonError);
+                }
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+        return result;
     }
 }

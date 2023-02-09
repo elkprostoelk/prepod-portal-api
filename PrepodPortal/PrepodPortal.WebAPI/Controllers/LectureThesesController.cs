@@ -44,8 +44,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddLectureThesesAsync(newLectureThesesDto);
-            return added ? Ok() : Conflict();
+            var result = await _service.AddLectureThesesAsync(newLectureThesesDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(result.Errors);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
 using PrepodPortal.DataAccess.Entities;
 using PrepodPortal.DataAccess.Interfaces;
@@ -35,22 +36,36 @@ public class PublicationService : IPublicationService
         }
     }
 
-    public async Task<bool> DeleteAsync(long id)
+    public async Task<ServiceResult> DeleteAsync(long id)
     {
+        var result = new ServiceResult();
+        const string commonError = "Failed to delete a publication";
         try
         {
             var publication = await _repository.GetAsync(id);
             if (publication is null)
             {
-                return false;
+                result.IsSuccessful = false;
+                result.Errors.Add("Publication was not found!");
             }
-
-            return await _repository.RemoveAsync(publication);
+            else
+            {
+                var added = await _repository.RemoveAsync(publication);
+                if (!added)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add(commonError);
+                }
+            }
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "An exception occured when executing the service");
-            return false;
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
         }
+
+        return result;
     }
 }

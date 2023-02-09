@@ -40,8 +40,10 @@ namespace PrepodPortal.WebAPI.Controllers
                 return Forbid();
             }
 
-            var added = await _service.AddSchoolBookAsync(newSchoolBookDto);
-            return added ? Ok() : Conflict();
+            var result = await _service.AddSchoolBookAsync(newSchoolBookDto);
+            return result.IsSuccessful
+                ? StatusCode(201, result.Container)
+                : BadRequest(result.Errors);
         }
     }
 }

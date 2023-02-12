@@ -12,5 +12,15 @@ public class AutoMapperProfile : Profile
         CreateMap<NewArticleDto, Article>()
             .ForMember(article => article.Authors,
                 options => options.Ignore());
+
+        CreateMap<ApplicationUser, ShortUserDto>();
+        CreateMap<Publication, ShortPublicationDto>();
+
+        CreateMap<NewResearchWorkDto, ResearchWork>()
+            .ForMember(researchWork => researchWork.Performers, opts => opts.Ignore())
+            .ForMember(researchWork => researchWork.Publications, opts => opts.Ignore());
+        CreateMap<ResearchWork, ResearchWorkDto>()
+            .ForMember(dto => dto.Performers, opts => opts.MapFrom(researchWork => researchWork.Performers))
+            .ForMember(dto => dto.Publications, opts => opts.MapFrom(researchWork => researchWork.Publications));
     }
 }

@@ -20,7 +20,11 @@ public abstract class Publication
     
     public int? PrintedAuthorPagesCount { get; set; }
     
+    public long? ResearchWorkId { get; set; }
+    
     public ICollection<ApplicationUser>? Authors { get; set; }
     
     public ICollection<UserPublication>? UserPublications { get; set; }
+    
+    public ResearchWork ResearchWork { get; set; }
 }

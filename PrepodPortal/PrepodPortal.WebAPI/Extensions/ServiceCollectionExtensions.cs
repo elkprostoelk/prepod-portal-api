@@ -40,6 +40,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMonographRepository, MonographRepository>();
         services.AddScoped<ILectureThesesRepository, LectureThesesRepository>();
         services.AddScoped<ISchoolBookRepository, SchoolBookRepository>();
+        services.AddScoped<IResearchWorkRepository, ResearchWorkRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
         
         services.AddScoped<IPasswordGenerator, PasswordGenerator>();
         services.AddScoped<IEmailService, EmailService>();
@@ -52,6 +54,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMonographService, MonographService>();
         services.AddScoped<ILectureThesesService, LectureThesesService>();
         services.AddScoped<ISchoolBookService, SchoolBookService>();
+        services.AddScoped<IResearchWorkService, ResearchWorkService>();
+        services.AddScoped<IDepartmentService, DepartmentService>();
         
         services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
         services.AddSingleton<IHtmlSanitizer>(_ => new HtmlSanitizer());

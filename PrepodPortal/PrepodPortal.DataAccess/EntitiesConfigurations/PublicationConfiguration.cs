@@ -24,5 +24,10 @@ public class PublicationConfiguration : IEntityTypeConfiguration<Publication>
 
         builder.Property(publication => publication.AuthorPagesCount)
             .IsRequired();
+
+        builder.HasOne(publication => publication.ResearchWork)
+            .WithMany(researchWork => researchWork.Publications)
+            .HasForeignKey(publication => publication.ResearchWorkId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

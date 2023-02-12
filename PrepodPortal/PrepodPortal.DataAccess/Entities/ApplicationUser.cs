@@ -36,6 +36,8 @@ public class ApplicationUser : IdentityUser
     public ICollection<Publication> Publications { get; set; }
     
     public ICollection<UserPublication> UserPublications { get; set; }
+    
+    public ICollection<ResearchWork> ResearchWorks { get; set; }
 
     public Department? Department { get; set; }
 }

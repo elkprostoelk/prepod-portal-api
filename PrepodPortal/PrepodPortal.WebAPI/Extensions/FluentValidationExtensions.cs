@@ -41,4 +41,11 @@ public static class FluentValidationExtensions
         ruleBuilder.Must((dto, file) =>
                 file is null || file.Length <= maxFileSizeInKilobytes)
             .WithMessage($"File must be less than {maxFileSizeInKilobytes / 1024} KB!");
+
+    public static IRuleBuilder<T, long> MustFindDepartmentById<T>(
+        this IRuleBuilder<T, long> ruleBuilder,
+        IDepartmentService departmentService) =>
+        ruleBuilder.MustAsync(async (departmentId, token) =>
+            await departmentService.ExistsAsync(departmentId, token))
+            .WithMessage("Department does not exist!");
 }

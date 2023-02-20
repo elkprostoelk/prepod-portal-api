@@ -6,4 +6,5 @@ public interface IUserRepository
 {
     Task<bool> ExistsAsync(string idOrEmail, CancellationToken cancellationToken);
     Task<ApplicationUser?> GetAsync(string email);
+    Task<bool> UpdateAsync(ApplicationUser user);
 }

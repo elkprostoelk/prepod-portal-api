@@ -30,17 +30,21 @@ public static class FluentValidationExtensions
 
     public static IRuleBuilder<T, IFormFile> MustBeOfSpecifiedFileTypes<T>(
         this IRuleBuilder<T, IFormFile> ruleBuilder,
-        params string[] extensions) =>
+        string[] extensions,
+        string propertyName) =>
         ruleBuilder.Must((dto, file) =>
-                file is null || extensions.Contains(Path.GetExtension(file.FileName)[1..].ToLower()))
-            .WithMessage($"File must be {String.Join(",", extensions)} only!");
+                extensions.Contains(Path.GetExtension(file.FileName)[1..].ToLower()))
+            .WithMessage($"File must be {String.Join(",", extensions)} only!")
+            .WithName(propertyName);
 
     public static IRuleBuilder<T, IFormFile> MaximumFileSize<T>(
         this IRuleBuilder<T, IFormFile> ruleBuilder,
-        int maxFileSizeInKilobytes) =>
+        int maxFileSizeInKilobytes,
+        string propertyName) =>
         ruleBuilder.Must((dto, file) =>
-                file is null || file.Length <= maxFileSizeInKilobytes)
-            .WithMessage($"File must be less than {maxFileSizeInKilobytes / 1024} KB!");
+                file.Length <= maxFileSizeInKilobytes * 1024)
+            .WithMessage($"File must be less than {maxFileSizeInKilobytes} KB!")
+            .WithName(propertyName);
 
     public static IRuleBuilder<T, long> MustFindDepartmentById<T>(
         this IRuleBuilder<T, long> ruleBuilder,

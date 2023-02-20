@@ -9,4 +9,5 @@ public interface IUserService
     Task<ServiceResult<string>> RegisterTeacherAsync(NewTeacherDto newTeacherDto);
     Task<ServiceResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
     Task<ServiceResult> DeleteUserAsync(string id);
+    Task<ServiceResult> ChangeAvatarAsync(ChangeUserAvatarDto changeUserAvatarDto);
 }

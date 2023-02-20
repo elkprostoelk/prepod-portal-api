@@ -225,6 +225,63 @@ public class UserService : IUserService
         return result;
     }
 
+    public async Task<ServiceResult> ChangeAvatarAsync(ChangeUserAvatarDto changeUserAvatarDto)
+    {
+        var result = new ServiceResult();
+        const string commonError = "Failed to change user's avatar";
+        try
+        {
+            var user = await _userManager.FindByIdAsync(changeUserAvatarDto.UserId);
+            if (user is null)
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add("User does not exist!");
+            }
+            else
+            {
+                var userAvatarFolderPath = $"{Environment.CurrentDirectory}/Users/{user.Email}/avatar";
+                var pathExists = Directory.Exists(userAvatarFolderPath);
+                if (!pathExists)
+                {
+                    Directory.CreateDirectory(userAvatarFolderPath);
+                }
+
+                var directoryInfo = new DirectoryInfo(userAvatarFolderPath).GetFiles();
+                if (directoryInfo.Any())
+                {
+                    foreach (var file in directoryInfo)
+                    {
+                        file.Delete();
+                    }
+                }
+
+                var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(changeUserAvatarDto.AvatarImageFile.FileName)}";
+                var filePath = $"{userAvatarFolderPath}/{newFileName}";
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await changeUserAvatarDto.AvatarImageFile.CopyToAsync(stream);
+                }
+
+                user.AvatarImagePath = filePath;
+                var updated = await _repository.UpdateAsync(user);
+                if (!updated)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add(commonError);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
+        }
+
+        return result;
+    }
+
     private async Task<string> GenerateTokenAsync(ApplicationUser user)
     {
         var key = Encoding.UTF8.GetBytes(_jwtConfiguration.Secret);

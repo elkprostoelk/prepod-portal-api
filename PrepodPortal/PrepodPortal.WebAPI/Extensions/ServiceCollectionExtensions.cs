@@ -1,7 +1,9 @@
+using System.Reflection;
 using System.Text;
 using FluentValidation;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +15,6 @@ using PrepodPortal.DataAccess;
 using PrepodPortal.DataAccess.Entities;
 using PrepodPortal.DataAccess.Interfaces;
 using PrepodPortal.DataAccess.Repositories;
-using PrepodPortal.WebAPI.Validators;
 
 namespace PrepodPortal.WebAPI.Extensions;
 
@@ -24,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfiguration"));
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
         services.Configure<AdminUserConfiguration>(configuration.GetSection("AdminUserConfiguration"));
+        services.Configure<AvatarImageConfiguration>(configuration.GetSection("AvatarImageConfiguration"));
     }
     
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
@@ -56,8 +58,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISchoolBookService, SchoolBookService>();
         services.AddScoped<IResearchWorkService, ResearchWorkService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
-        
-        services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+
+        services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         services.AddSingleton<IHtmlSanitizer>(_ => new HtmlSanitizer());
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddRouting(options => options.LowercaseUrls = true);

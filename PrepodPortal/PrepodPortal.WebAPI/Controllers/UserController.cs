@@ -15,15 +15,18 @@ namespace PrepodPortal.WebAPI.Controllers
         private readonly IValidator<NewTeacherDto> _newTeacherValidator;
         private readonly IValidator<ChangePasswordDto> _changePasswordValidator;
         private readonly IUserService _service;
-        
+        private readonly IValidator<ChangeUserAvatarDto> _changeAvatarValidator;
+
         public UserController(
             IValidator<NewTeacherDto> newTeacherValidator,
             IValidator<ChangePasswordDto> changePasswordValidator,
-            IUserService service)
+            IUserService service,
+            IValidator<ChangeUserAvatarDto> changeAvatarValidator)
         {
             _newTeacherValidator = newTeacherValidator;
             _changePasswordValidator = changePasswordValidator;
             _service = service;
+            _changeAvatarValidator = changeAvatarValidator;
         }
         
         [HttpPost("new-teacher")]
@@ -66,6 +69,7 @@ namespace PrepodPortal.WebAPI.Controllers
                 : BadRequest(new { errors = result.Errors });
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -84,6 +88,32 @@ namespace PrepodPortal.WebAPI.Controllers
             return result.IsSuccessful
                 ? NoContent()
                 : BadRequest(new { errors = result.Errors });
+        }
+
+        [Authorize]
+        [HttpPatch("change-avatar")]
+        public async Task<IActionResult> ChangeUserAvatar([FromForm] ChangeUserAvatarDto changeUserAvatarDto)
+        {
+            var validationResult = await _changeAvatarValidator.ValidateAsync(changeUserAvatarDto);
+            if (!validationResult.IsValid)
+            {
+                validationResult.AddToModelState(ModelState);
+                var errors = ModelState.SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage)
+                    .ToList();
+                return BadRequest(errors);
+            }
+
+            if (User.GetUserId() != changeUserAvatarDto.UserId
+                && !User.IsInRole("administrator"))
+            {
+                return Forbid();
+            }
+
+            var result = await _service.ChangeAvatarAsync(changeUserAvatarDto);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(result.Errors);
         }
     }
 }

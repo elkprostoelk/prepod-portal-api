@@ -39,7 +39,7 @@ namespace PrepodPortal.WebAPI.Controllers
         
             var result = await _userService.ValidateUserAsync(loginDto);
             return result.IsSuccessful
-                ? Ok(result)
+                ? Ok(result.Container)
                 : Unauthorized(result.Errors);
         }
     }

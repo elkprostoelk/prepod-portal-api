@@ -26,4 +26,10 @@ public class UserRepository : IUserRepository
 
     public async Task<ApplicationUser?> GetAsync(string email) =>
         await _userManager.FindByEmailAsync(email);
+
+    public async Task<bool> UpdateAsync(ApplicationUser user)
+    {
+        _context.Users.Update(user);
+        return await _context.SaveChangesAsync() > 0;
+    }
 }

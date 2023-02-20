@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 using PrepodPortal.WebAPI.Extensions;
 using Serilog;
 
@@ -49,6 +50,12 @@ app.UseCors(corsPolicyBuilder => corsPolicyBuilder
     .AllowAnyMethod()
     .AllowAnyOrigin()
 );
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(builder.Environment.ContentRootPath, "Users")),
+    RequestPath = String.Empty
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

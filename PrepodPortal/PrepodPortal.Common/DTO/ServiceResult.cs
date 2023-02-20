@@ -2,7 +2,7 @@ namespace PrepodPortal.Common.DTO;
 
 public class ServiceResult
 {
-    public bool IsSuccessful { get; set; }
+    public bool IsSuccessful { get; set; } = true;
 
     public IList<string> Errors { get; set; } = new List<string>();
 }

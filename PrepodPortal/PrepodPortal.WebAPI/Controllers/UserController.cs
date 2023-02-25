@@ -113,7 +113,29 @@ namespace PrepodPortal.WebAPI.Controllers
             var result = await _service.ChangeAvatarAsync(changeUserAvatarDto);
             return result.IsSuccessful
                 ? NoContent()
-                : BadRequest(result.Errors);
+                : BadRequest(new { errors = result.Errors });
+        }
+
+        [Authorize]
+        [HttpDelete("delete-avatar/{id}")]
+        public async Task<IActionResult> DeleteAvatar(string id)
+        {
+            var userExists = await _service.UserExistsAsync(id);
+            if (!userExists)
+            {
+                return BadRequest("User does not exist");
+            }
+            
+            if (User.GetUserId() != id
+                && !User.IsInRole("administrator"))
+            {
+                return Forbid();
+            }
+
+            var result = await _service.DeleteAvatarAsync(id);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(new { errors = result.Errors });
         }
     }
 }

@@ -10,4 +10,5 @@ public interface IUserService
     Task<ServiceResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto);
     Task<ServiceResult> DeleteUserAsync(string id);
     Task<ServiceResult> ChangeAvatarAsync(ChangeUserAvatarDto changeUserAvatarDto);
+    Task<ServiceResult> DeleteAvatarAsync(string id);
 }

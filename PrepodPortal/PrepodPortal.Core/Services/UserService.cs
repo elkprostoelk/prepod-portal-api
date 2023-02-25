@@ -108,7 +108,7 @@ public class UserService : IUserService
                 Name = newTeacherDto.Name,
                 DepartmentId = newTeacherDto.DepartmentId,
                 ScientometricDbProfiles = new List<ScientometricDbProfile>(),
-                AvatarImagePath = "/Images/no-avatar.png"
+                AvatarImagePath = "/Users/no-avatar.png"
             };
             var creationResult = await _userManager.CreateAsync(newUser, password);
             result.IsSuccessful = creationResult.Succeeded;
@@ -265,6 +265,42 @@ public class UserService : IUserService
                 }
 
                 user.AvatarImagePath = filePath;
+                var updated = await _repository.UpdateAsync(user);
+                if (!updated)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add(commonError);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            result.IsSuccessful = false;
+            result.Errors.Add(commonError);
+            result.Errors = result.Errors.Distinct().ToList();
+        }
+
+        return result;
+    }
+
+    public async Task<ServiceResult> DeleteAvatarAsync(string id)
+    {
+        const string commonError = "Failed to delete the user's avatar!";
+        var result = new ServiceResult();
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+            {
+                result.IsSuccessful = false;
+                result.Errors.Add("User does not exist!");
+            }
+            else
+            {
+                var fullFilePath = $"{Environment.CurrentDirectory}/{user.AvatarImagePath}";
+                File.Delete(fullFilePath);
+                user.AvatarImagePath = "/Users/no-avatar.png";
                 var updated = await _repository.UpdateAsync(user);
                 if (!updated)
                 {

@@ -239,14 +239,15 @@ public class UserService : IUserService
             }
             else
             {
-                var userAvatarFolderPath = $"{Environment.CurrentDirectory}/Users/{user.Email}/avatar";
+                var userAvatarFolderPath = $"Users/{user.Email}/avatar";
+                var fullUserAvatarFolderPath = $"{Environment.CurrentDirectory}/{userAvatarFolderPath}";
                 var pathExists = Directory.Exists(userAvatarFolderPath);
                 if (!pathExists)
                 {
-                    Directory.CreateDirectory(userAvatarFolderPath);
+                    Directory.CreateDirectory(fullUserAvatarFolderPath);
                 }
 
-                var directoryInfo = new DirectoryInfo(userAvatarFolderPath).GetFiles();
+                var directoryInfo = new DirectoryInfo(fullUserAvatarFolderPath).GetFiles();
                 if (directoryInfo.Any())
                 {
                     foreach (var file in directoryInfo)
@@ -257,7 +258,8 @@ public class UserService : IUserService
 
                 var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(changeUserAvatarDto.AvatarImageFile.FileName)}";
                 var filePath = $"{userAvatarFolderPath}/{newFileName}";
-                await using (var stream = new FileStream(filePath, FileMode.Create))
+                var fullFilePath = $"{fullUserAvatarFolderPath}/{newFileName}";
+                await using (var stream = new FileStream(fullFilePath, FileMode.Create))
                 {
                     await changeUserAvatarDto.AvatarImageFile.CopyToAsync(stream);
                 }

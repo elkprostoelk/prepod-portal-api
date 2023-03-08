@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,6 +23,7 @@ public class UserService : IUserService
     private readonly JwtConfiguration _jwtConfiguration;
     private readonly IScientometricDbProfileService _scientometricDbProfileService;
     private readonly IEmailService _emailService;
+    private readonly IMapper _mapper;
 
     public UserService(
         IPasswordGenerator passwordGenerator,
@@ -30,8 +32,8 @@ public class UserService : IUserService
         UserManager<ApplicationUser> userManager,
         IOptions<JwtConfiguration> jwtConfiguration,
         IScientometricDbProfileService scientometricDbProfileService,
-        IEmailService emailService
-        )
+        IEmailService emailService,
+        IMapper mapper)
     {
         _passwordGenerator = passwordGenerator;
         _logger = logger;
@@ -39,6 +41,7 @@ public class UserService : IUserService
         _userManager = userManager;
         _scientometricDbProfileService = scientometricDbProfileService;
         _emailService = emailService;
+        _mapper = mapper;
         _jwtConfiguration = jwtConfiguration.Value;
     }
     
@@ -127,7 +130,7 @@ public class UserService : IUserService
                     if (result.IsSuccessful)
                     {
                         Directory.CreateDirectory($"{Environment.CurrentDirectory}/Users/{newTeacherDto.Email}/avatar");
-                        await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
+                        // await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
                     }
                     else
                     {
@@ -317,6 +320,26 @@ public class UserService : IUserService
             result.Errors = result.Errors.Distinct().ToList();
         }
 
+        return result;
+    }
+
+    public async Task<ServiceResult<ICollection<BriefUserProfileDto>>> GetAllTeachersAsync(string? userId)
+    {
+        var result = new ServiceResult<ICollection<BriefUserProfileDto>>();
+
+        try
+        {
+            var teachers = await _repository.GetAllAsync(userId);
+            result.Container = _mapper.Map<ICollection<BriefUserProfileDto>>(teachers);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            result.IsSuccessful = false;
+            result.Container = new List<BriefUserProfileDto>();
+            result.Errors.Add("Failed to get teachers' list!");
+        }
+        
         return result;
     }
 

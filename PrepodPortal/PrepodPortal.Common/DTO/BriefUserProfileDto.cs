@@ -12,7 +12,9 @@ public class BriefUserProfileDto
     
     public string? ScienceDegree { get; set; }
     
-    public string DepartmentTitle { get; set; }
+    public string? WorkplaceLocation { get; set; }
+    
+    public string Department { get; set; }
     
     public string AvatarImagePath { get; set; }
 }

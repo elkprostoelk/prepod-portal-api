@@ -11,4 +11,5 @@ public interface IUserService
     Task<ServiceResult> DeleteUserAsync(string id);
     Task<ServiceResult> ChangeAvatarAsync(ChangeUserAvatarDto changeUserAvatarDto);
     Task<ServiceResult> DeleteAvatarAsync(string id);
+    Task<ServiceResult<ICollection<BriefUserProfileDto>>> GetAllTeachersAsync(string? userId);
 }

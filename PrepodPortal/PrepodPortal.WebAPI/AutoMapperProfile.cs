@@ -26,6 +26,9 @@ public class AutoMapperProfile : Profile
             .ForMember(article => article.Authors,
             options => options.Ignore());
         CreateMap<ApplicationUser, ShortUserDto>();
+        CreateMap<ApplicationUser, BriefUserProfileDto>()
+            .ForMember(dto => dto.Department,
+                opts => opts.MapFrom(user => user.Department!.Title));
         CreateMap<Publication, ShortPublicationDto>();
         CreateMap<NewResearchWorkDto, ResearchWork>()
             .ForMember(researchWork => researchWork.Performers, opts => opts.Ignore())

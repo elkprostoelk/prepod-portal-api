@@ -28,6 +28,13 @@ namespace PrepodPortal.WebAPI.Controllers
             _service = service;
             _changeAvatarValidator = changeAvatarValidator;
         }
+
+        [HttpGet("teachers-list")]
+        public async Task<IActionResult> GetAllTeachersList()
+        {
+            var userId = User.Identity.IsAuthenticated ? User.GetUserId() : null;
+            return Ok(await _service.GetAllTeachersAsync(userId));
+        }
         
         [HttpPost("new-teacher")]
         [Authorize(Roles = "administrator, profiles creator")]

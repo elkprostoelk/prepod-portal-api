@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PrepodPortal.DataAccess.Entities;
 using PrepodPortal.DataAccess.Interfaces;
 
 namespace PrepodPortal.DataAccess.Repositories;
@@ -16,4 +17,7 @@ public class DepartmentRepository : IDepartmentRepository
         await _context.Departments.AnyAsync(
             department => department.Id == id,
             cancellationToken);
+
+    public async Task<ICollection<Department>> GetAllAsync() =>
+        await _context.Departments.ToListAsync();
 }

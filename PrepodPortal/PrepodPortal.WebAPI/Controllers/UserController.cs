@@ -49,7 +49,7 @@ namespace PrepodPortal.WebAPI.Controllers
 
             var result = await _service.RegisterTeacherAsync(newTeacherDto);
             return result.IsSuccessful
-                ? StatusCode(201, result.Container)
+                ? StatusCode(201, new { userId = result.Container })
                 : BadRequest(new { errors = result.Errors });
         }
 

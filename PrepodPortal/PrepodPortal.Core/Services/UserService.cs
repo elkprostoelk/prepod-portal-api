@@ -117,8 +117,8 @@ public class UserService : IUserService
             result.IsSuccessful = creationResult.Succeeded;
             if (result.IsSuccessful)
             {
-                var roleCreationResult = await _userManager.AddToRoleAsync(newUser, "user");
-                result.IsSuccessful = result.IsSuccessful && roleCreationResult.Succeeded;
+                var roleAddingResult = await _userManager.AddToRoleAsync(newUser, "user");
+                result.IsSuccessful = result.IsSuccessful && roleAddingResult.Succeeded;
                 if (result.IsSuccessful)
                 {
                     var scientometricDbProfilesAddingResult = await _scientometricDbProfileService
@@ -130,6 +130,7 @@ public class UserService : IUserService
                     if (result.IsSuccessful)
                     {
                         Directory.CreateDirectory($"{Environment.CurrentDirectory}/Users/{newTeacherDto.Email}/avatar");
+                        result.Container = newUser.Id;
                         // await _emailService.SendEmailAsync(newTeacherDto.Name, newTeacherDto.Email, password);
                     }
                     else
@@ -145,6 +146,10 @@ public class UserService : IUserService
             else
             {
                 result.Errors.Add("Failed to create a user!");
+                if (creationResult.Errors.Any(error => error.Code == "DuplicateEmail"))
+                {
+                    result.Errors.Add("Користувач з такою адресою пошти вже існує!");
+                }
             }
         }
         catch (Exception e)

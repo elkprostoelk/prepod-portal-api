@@ -32,7 +32,7 @@ public static class WebApplicationExtensions
             Email = adminConfig.Email,
             UserName = adminConfig.Email,
             Name = "Admin",
-            AvatarImagePath = "/Images/no-avatar.png",
+            AvatarImagePath = "no-avatar.png",
             DepartmentId = 31,
             Gender = Gender.Male
         };

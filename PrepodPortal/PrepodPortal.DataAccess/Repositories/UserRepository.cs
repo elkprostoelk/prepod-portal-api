@@ -51,4 +51,12 @@ public class UserRepository : IUserRepository
         
         return await users.ToListAsync();
     }
+
+    public async Task<ApplicationUser?> GetFullAsync(string userId) =>
+        await _userManager.Users
+            .Include(user => user.Department)
+            .Include(user => user.AcademicDegrees)
+            .Include(user => user.ScientometricDbProfiles)
+            .Include(user => user.Educations)
+            .FirstOrDefaultAsync(user => user.Id == userId);
 }

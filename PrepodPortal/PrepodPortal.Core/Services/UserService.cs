@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -111,7 +112,7 @@ public class UserService : IUserService
                 Name = newTeacherDto.Name,
                 DepartmentId = newTeacherDto.DepartmentId,
                 ScientometricDbProfiles = new List<ScientometricDbProfile>(),
-                AvatarImagePath = "/Users/no-avatar.png"
+                AvatarImagePath = "no-avatar.png"
             };
             var creationResult = await _userManager.CreateAsync(newUser, password);
             result.IsSuccessful = creationResult.Succeeded;
@@ -272,7 +273,7 @@ public class UserService : IUserService
                     await changeUserAvatarDto.AvatarImageFile.CopyToAsync(stream);
                 }
 
-                user.AvatarImagePath = filePath;
+                user.AvatarImagePath = $"{user.Email}/avatar/{newFileName}";
                 var updated = await _repository.UpdateAsync(user);
                 if (!updated)
                 {
@@ -308,7 +309,7 @@ public class UserService : IUserService
             {
                 var fullFilePath = $"{Environment.CurrentDirectory}/{user.AvatarImagePath}";
                 File.Delete(fullFilePath);
-                user.AvatarImagePath = "/Users/no-avatar.png";
+                user.AvatarImagePath = "no-avatar.png";
                 var updated = await _repository.UpdateAsync(user);
                 if (!updated)
                 {
@@ -346,6 +347,38 @@ public class UserService : IUserService
         }
         
         return result;
+    }
+
+    public async Task<UserMainInfoDto?> GetMainInfoAsync(string userId)
+    {
+        try
+        {
+            var user = await _repository.GetFullAsync(userId);
+            return user is null
+                ? null
+                : _mapper.Map<UserMainInfoDto>(user);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return null;
+        }
+    }
+
+    public async Task<UserNameAndAvatarDto?> GetAvatarAndNameAsync(string userId)
+    {
+        try
+        {
+            var user = await _repository.GetFullAsync(userId);
+            return user is null
+                ? null
+                : _mapper.Map<UserNameAndAvatarDto>(user);
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "An exception occured when executing the service");
+            return null;
+        }
     }
 
     private async Task<string> GenerateTokenAsync(ApplicationUser user)

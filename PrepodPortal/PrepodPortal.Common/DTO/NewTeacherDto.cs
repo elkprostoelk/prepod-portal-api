@@ -8,5 +8,5 @@ public class NewTeacherDto
     
     public long DepartmentId { get; set; }
     
-    public ICollection<NewScientometricDbProfileDto> ScientometricDbProfiles { get; set; }
+    public ICollection<ScientometricDbProfileDto> ScientometricDbProfiles { get; set; }
 }

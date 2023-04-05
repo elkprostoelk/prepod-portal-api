@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PrepodPortal.Common.Enums;
 
 public enum AcademicDegreeGain
 {
-    Ph_D,
-    PhD
+    [Display(Name = "Професор")]
+    Professor,
+    [Display(Name = "Доцент")]
+    AssistantProfessor
 }

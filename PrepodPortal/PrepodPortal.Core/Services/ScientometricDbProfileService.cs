@@ -23,7 +23,7 @@ public class ScientometricDbProfileService : IScientometricDbProfileService
         _repository = repository;
     }
     
-    public async Task<ServiceResult<ICollection<long>>> AddProfilesAsync(ICollection<NewScientometricDbProfileDto> scientometricDbProfiles,
+    public async Task<ServiceResult<ICollection<long>>> AddProfilesAsync(ICollection<ScientometricDbProfileDto> scientometricDbProfiles,
         string userId)
     {
         const string commonError = "Failed to add scientometric DB profiles!";

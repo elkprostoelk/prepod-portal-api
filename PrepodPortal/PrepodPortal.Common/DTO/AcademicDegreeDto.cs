@@ -6,7 +6,7 @@ public class AcademicDegreeDto
 {
     public long Id { get; set; }
     
-    public AcademicDegreeGain Type { get; set; }
+    public string Type { get; set; }
     
     public DateTime ReceiveDiplomaDate { get; set; }
     

@@ -1,5 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using AutoMapper;
+using Microsoft.OpenApi.Extensions;
 using PrepodPortal.Common.DTO;
+using PrepodPortal.Common.Extensions;
 using PrepodPortal.DataAccess.Entities;
 
 namespace PrepodPortal.WebAPI;
@@ -8,12 +12,15 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<NewScientometricDbProfileDto, ScientometricDbProfile>();
+        CreateMap<ScientometricDbProfileDto, ScientometricDbProfile>()
+            .ReverseMap();
         CreateMap<NewArticleDto, Article>()
             .ForMember(article => article.Authors,
                 options => options.Ignore());
         CreateMap<NewAcademicDegreeDto, AcademicDegree>();
-        CreateMap<AcademicDegree, AcademicDegreeDto>();
+        CreateMap<AcademicDegree, AcademicDegreeDto>()
+            .ForMember(dto => dto.Type,
+                opts => opts.MapFrom(degree => degree.Type.GetDisplayAttribute()));
         CreateMap<NewEducationDto, Education>();
         CreateMap<Education, EducationDto>();
         CreateMap<Department, DepartmentDto>();
@@ -26,6 +33,10 @@ public class AutoMapperProfile : Profile
         CreateMap<NewSchoolBookDto, SchoolBook>()
             .ForMember(article => article.Authors,
             options => options.Ignore());
+        CreateMap<ApplicationUser, UserMainInfoDto>()
+            .ForMember(dto => dto.Gender, opts => opts.MapFrom(user => user.Gender.GetDisplayAttribute()))
+            .ForMember(dto => dto.Department, opts => opts.MapFrom(user => user.Department.Title));
+        CreateMap<ApplicationUser, UserNameAndAvatarDto>();
         CreateMap<ApplicationUser, ShortUserDto>();
         CreateMap<ApplicationUser, BriefUserProfileDto>()
             .ForMember(dto => dto.Department,

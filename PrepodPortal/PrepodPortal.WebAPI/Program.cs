@@ -2,8 +2,16 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.FileProviders;
 using PrepodPortal.WebAPI.Extensions;
 using Serilog;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var staticFilesPath = Path.Combine(builder.Environment.ContentRootPath, "Users");
+if (!Directory.Exists(staticFilesPath))
+{
+    Directory.CreateDirectory(staticFilesPath);
+}
 
 var configuredLogger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -50,10 +58,11 @@ app.UseCors(corsPolicyBuilder => corsPolicyBuilder
     .AllowAnyMethod()
     .AllowAnyOrigin()
 );
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Users")),
+        staticFilesPath),
     RequestPath = String.Empty
 });
 

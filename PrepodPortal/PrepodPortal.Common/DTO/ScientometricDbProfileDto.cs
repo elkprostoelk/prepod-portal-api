@@ -1,6 +1,6 @@
 namespace PrepodPortal.Common.DTO;
 
-public class NewScientometricDbProfileDto
+public class ScientometricDbProfileDto
 {
     public string Name { get; set; }
     

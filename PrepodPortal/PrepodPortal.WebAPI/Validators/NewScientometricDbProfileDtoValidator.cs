@@ -3,7 +3,7 @@ using PrepodPortal.Common.DTO;
 
 namespace PrepodPortal.WebAPI.Validators;
 
-public class NewScientometricDbProfileDtoValidator : AbstractValidator<NewScientometricDbProfileDto>
+public class NewScientometricDbProfileDtoValidator : AbstractValidator<ScientometricDbProfileDto>
 {
     public NewScientometricDbProfileDtoValidator()
     {

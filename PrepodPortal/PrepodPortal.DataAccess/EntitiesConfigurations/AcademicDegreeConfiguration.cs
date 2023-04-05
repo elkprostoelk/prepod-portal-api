@@ -13,7 +13,7 @@ public class AcademicDegreeConfiguration : IEntityTypeConfiguration<AcademicDegr
 
         builder.Property(degree => degree.Type)
             .IsRequired()
-            .HasDefaultValue(AcademicDegreeGain.PhD);
+            .HasDefaultValue(AcademicDegreeGain.AssistantProfessor);
 
         builder.Property(degree => degree.DiplomaNumber)
             .IsRequired()

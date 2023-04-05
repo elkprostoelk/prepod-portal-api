@@ -9,4 +9,5 @@ public interface IUserRepository
     Task<ApplicationUser?> GetAsync(string email);
     Task<bool> UpdateAsync(ApplicationUser user);
     Task<ICollection<ApplicationUser>> GetAllAsync(string? userId);
+    Task<ApplicationUser?> GetFullAsync(string userId);
 }

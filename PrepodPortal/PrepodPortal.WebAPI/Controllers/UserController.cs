@@ -35,6 +35,24 @@ namespace PrepodPortal.WebAPI.Controllers
             var userId = User.Identity.IsAuthenticated ? User.GetUserId() : null;
             return Ok(await _service.GetAllTeachersAsync(userId));
         }
+
+        [HttpGet("name-and-avatar/{userId}")]
+        public async Task<IActionResult> GetUserAvatarAndName(string userId)
+        {
+            var userExists = await _service.UserExistsAsync(userId);
+            return userExists
+                ? Ok(await _service.GetAvatarAndNameAsync(userId))
+                : NotFound();
+        }
+        
+        [HttpGet("main-info/{userId}")]
+        public async Task<IActionResult> GetUserMainInfo(string userId)
+        {
+            var userExists = await _service.UserExistsAsync(userId);
+            return userExists
+                ? Ok(await _service.GetMainInfoAsync(userId))
+                : NotFound();
+        }
         
         [HttpPost("new-teacher")]
         [Authorize(Roles = "administrator, profiles creator")]

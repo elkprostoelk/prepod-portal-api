@@ -1,7 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 using AutoMapper;
-using Microsoft.OpenApi.Extensions;
 using PrepodPortal.Common.DTO;
 using PrepodPortal.Common.Extensions;
 using PrepodPortal.DataAccess.Entities;
@@ -19,6 +16,7 @@ public class AutoMapperProfile : Profile
                 options => options.Ignore());
         CreateMap<DissertationDefense, DissertationDefenseDto>()
             .ForMember(dto => dto.Type, opts => opts.MapFrom(defense => defense.Type.GetDisplayAttribute()));
+        CreateMap<Subject, SubjectDto>();
         CreateMap<NewAcademicDegreeDto, AcademicDegree>();
         CreateMap<AcademicDegree, AcademicDegreeDto>()
             .ForMember(dto => dto.Type,

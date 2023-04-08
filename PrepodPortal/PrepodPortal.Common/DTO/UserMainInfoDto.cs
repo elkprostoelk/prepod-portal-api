@@ -31,4 +31,7 @@ public class UserMainInfoDto
 
     public ICollection<DissertationDefenseDto> DissertationDefenses { get; set; }
         = new List<DissertationDefenseDto>();
+
+    public ICollection<SubjectDto> Subjects { get; set; }
+        = new List<SubjectDto>();
 }

@@ -29,6 +29,8 @@ public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
     
     public DbSet<DissertationDefense> DissertationDefenses { get; set; }
 
+    public DbSet<Subject> Subjects { get; set; }
+
     public PrepodPortalDbContext(DbContextOptions<PrepodPortalDbContext> options)
         : base(options)
     {

@@ -50,6 +50,11 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .HasForeignKey(defense => defense.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(user => user.Subjects)
+            .WithOne(subject => subject.User)
+            .HasForeignKey(subject => subject.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(user => user.Publications)
             .WithMany(publication => publication.Authors)
             .UsingEntity<UserPublication>(

@@ -61,5 +61,6 @@ public class UserRepository : IUserRepository
             .Include(user => user.ScientometricDbProfiles)
             .Include(user => user.Educations)
             .Include(user => user.DissertationDefenses)
+            .Include(user => user.Subjects)
             .FirstOrDefaultAsync(user => user.Id == userId);
 }

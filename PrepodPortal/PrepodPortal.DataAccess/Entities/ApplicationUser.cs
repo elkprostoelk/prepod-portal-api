@@ -38,6 +38,8 @@ public class ApplicationUser : IdentityUser
     public ICollection<UserPublication> UserPublications { get; set; }
     
     public ICollection<ResearchWork> ResearchWorks { get; set; }
+    
+    public ICollection<DissertationDefense> DissertationDefenses { get; set; }
 
     public Department? Department { get; set; }
 }

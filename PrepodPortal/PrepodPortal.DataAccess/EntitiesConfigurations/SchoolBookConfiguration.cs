@@ -24,7 +24,7 @@ public class SchoolBookConfiguration : IEntityTypeConfiguration<SchoolBook>
         builder.Property(schoolBook => schoolBook.OrderDate)
             .IsRequired()
             .HasColumnType("date")
-            .HasDefaultValue(DateTime.Now.Date);
+            .HasDefaultValueSql("GETDATE()");
 
         builder.Property(schoolBook => schoolBook.SchoolBookType)
             .IsRequired();

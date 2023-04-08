@@ -40,6 +40,7 @@ public class UserRepository : IUserRepository
     public async Task<ICollection<ApplicationUser>> GetAllAsync(string? userId)
     {
         var users = _context.Users
+            .AsNoTracking()
             .Include(user => user.Department)
             .Where(user =>
                 user.Email != _adminUserConfig.Email);
@@ -54,9 +55,11 @@ public class UserRepository : IUserRepository
 
     public async Task<ApplicationUser?> GetFullAsync(string userId) =>
         await _userManager.Users
+            .AsNoTracking()
             .Include(user => user.Department)
             .Include(user => user.AcademicDegrees)
             .Include(user => user.ScientometricDbProfiles)
             .Include(user => user.Educations)
+            .Include(user => user.DissertationDefenses)
             .FirstOrDefaultAsync(user => user.Id == userId);
 }

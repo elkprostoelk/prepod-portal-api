@@ -1,5 +1,3 @@
-using PrepodPortal.Common.Enums;
-
 namespace PrepodPortal.Common.DTO;
 
 public class UserMainInfoDto
@@ -30,4 +28,7 @@ public class UserMainInfoDto
 
     public ICollection<EducationDto> Educations { get; set; }
         = new List<EducationDto>();
+
+    public ICollection<DissertationDefenseDto> DissertationDefenses { get; set; }
+        = new List<DissertationDefenseDto>();
 }

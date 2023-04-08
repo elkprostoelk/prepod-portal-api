@@ -17,6 +17,8 @@ public class AutoMapperProfile : Profile
         CreateMap<NewArticleDto, Article>()
             .ForMember(article => article.Authors,
                 options => options.Ignore());
+        CreateMap<DissertationDefense, DissertationDefenseDto>()
+            .ForMember(dto => dto.Type, opts => opts.MapFrom(defense => defense.Type.GetDisplayAttribute()));
         CreateMap<NewAcademicDegreeDto, AcademicDegree>();
         CreateMap<AcademicDegree, AcademicDegreeDto>()
             .ForMember(dto => dto.Type,

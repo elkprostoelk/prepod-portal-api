@@ -26,6 +26,8 @@ public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<SchoolBook> SchoolBooks { get; set; }
     
     public DbSet<ResearchWork> ResearchWorks { get; set; }
+    
+    public DbSet<DissertationDefense> DissertationDefenses { get; set; }
 
     public PrepodPortalDbContext(DbContextOptions<PrepodPortalDbContext> options)
         : base(options)

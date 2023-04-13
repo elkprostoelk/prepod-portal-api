@@ -307,14 +307,23 @@ public class UserService : IUserService
             }
             else
             {
-                var fullFilePath = $"{Environment.CurrentDirectory}/{user.AvatarImagePath}";
-                File.Delete(fullFilePath);
-                user.AvatarImagePath = "no-avatar.png";
-                var updated = await _repository.UpdateAsync(user);
-                if (!updated)
+                var fullFilePath = $"{Environment.CurrentDirectory}/Users/{user.AvatarImagePath}";
+                if (File.Exists(fullFilePath))
+                {
+                    File.Delete(fullFilePath);
+                    user.AvatarImagePath = "no-avatar.png";
+                    var updated = await _repository.UpdateAsync(user);
+                    if (!updated)
+                    {
+                        result.IsSuccessful = false;
+                        result.Errors.Add(commonError);
+                    }
+                }
+                else
                 {
                     result.IsSuccessful = false;
-                    result.Errors.Add(commonError);
+                    _logger.LogError($"No file found on the path {fullFilePath}!");
+                    result.Errors.Add($"No file found!");
                 }
             }
         }

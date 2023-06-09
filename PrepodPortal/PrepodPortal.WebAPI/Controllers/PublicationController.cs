@@ -9,11 +9,26 @@ namespace PrepodPortal.WebAPI.Controllers
     public class PublicationController : ControllerBase
     {
         private readonly IPublicationService _service;
+        private readonly IUserService _userService;
 
         public PublicationController(
-            IPublicationService service)
+            IPublicationService service,
+            IUserService userService)
         {
             _service = service;
+            _userService = userService;
+        }
+
+        [HttpGet("all/{userId}")]
+        public async Task<IActionResult> GetAllUserPublicationsAsync(string userId)
+        {
+            var userExists = await _userService.UserExistsAsync(userId);
+            if (!userExists)
+            {
+                return NotFound("User does not exist!");
+            }
+
+            return Ok(await _service.GetAllAsync(userId));
         }
 
         [HttpDelete("{id:long}")]

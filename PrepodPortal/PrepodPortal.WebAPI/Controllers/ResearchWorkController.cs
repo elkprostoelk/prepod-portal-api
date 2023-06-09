@@ -56,7 +56,7 @@ namespace PrepodPortal.WebAPI.Controllers
                 return NotFound("Research work does not exist!");
             }
 
-            if (researchWorkDto.Performers.All(user => user.Id != id)
+            if (!researchWorkDto.Performers.Any(user => user.Id == User.GetUserId())
                 && !User.IsInRole("administrator"))
             {
                 return Forbid();

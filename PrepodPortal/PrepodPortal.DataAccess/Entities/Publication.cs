@@ -4,8 +4,6 @@ public abstract class Publication
 {
     public long Id { get; set; }
     
-    public string PublicationType { get; set; }
-    
     public string Title { get; set; }
     
     public string? PublishedLocation { get; set; }

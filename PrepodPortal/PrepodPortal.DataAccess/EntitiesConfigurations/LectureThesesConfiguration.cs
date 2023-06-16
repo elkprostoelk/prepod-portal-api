@@ -31,5 +31,7 @@ public class LectureThesesConfiguration : IEntityTypeConfiguration<LectureTheses
         
         builder.Property(lectureTheses => lectureTheses.EditionTitle)
             .HasMaxLength(50);
+
+        builder.ToTable("LectureTheses");
     }
 }

@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PrepodPortal.WebAPI.Controllers
 {
@@ -27,8 +31,8 @@ namespace PrepodPortal.WebAPI.Controllers
             {
                 return NotFound("User does not exist!");
             }
-
-            return Ok(await _service.GetAllAsync(userId));
+            var publications = await _service.GetAllAsync(userId);
+            return Ok(publications);
         }
 
         [HttpDelete("{id:long}")]

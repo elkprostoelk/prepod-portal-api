@@ -1,12 +1,12 @@
 ﻿namespace PrepodPortal.Common.DTO
 {
-    public class PublicationDto
+    public abstract class PublicationDto
     {
         public long Id { get; set; }
 
-        public string PublicationType { get; set; }
-
         public string Title { get; set; }
+
+        public string PublicationType { get; set; }
 
         public string? PublishedLocation { get; set; }
 

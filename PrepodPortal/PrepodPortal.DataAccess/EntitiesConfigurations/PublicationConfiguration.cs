@@ -14,8 +14,6 @@ public class PublicationConfiguration : IEntityTypeConfiguration<Publication>
             .IsRequired()
             .HasMaxLength(255);
 
-        builder.HasDiscriminator(publication => publication.PublicationType);
-
         builder.Property(publication => publication.PublishedLocation)
             .HasMaxLength(100);
 
@@ -27,6 +25,7 @@ public class PublicationConfiguration : IEntityTypeConfiguration<Publication>
 
         builder.HasOne(publication => publication.ResearchWork)
             .WithMany(researchWork => researchWork.Publications)
+            .IsRequired(false)
             .HasForeignKey(publication => publication.ResearchWorkId)
             .OnDelete(DeleteBehavior.ClientSetNull);
     }

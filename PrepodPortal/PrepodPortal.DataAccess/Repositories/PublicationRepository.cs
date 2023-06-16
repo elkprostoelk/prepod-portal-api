@@ -19,7 +19,7 @@ public class PublicationRepository : IPublicationRepository
     public async Task<ICollection<Publication>> GetAllAsync(string userId) =>
         await _context.Publications
             .Include(publication => publication.Authors)
-            .Where(publication => publication.Authors.Any(author => author.Id == userId))
+            //.Where(publication => publication.Authors.Any(author => author.Id == userId))
             .ToListAsync();
 
     public async Task<Publication?> GetAsync(long id) =>

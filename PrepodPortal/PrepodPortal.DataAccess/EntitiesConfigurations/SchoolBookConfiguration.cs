@@ -28,5 +28,7 @@ public class SchoolBookConfiguration : IEntityTypeConfiguration<SchoolBook>
 
         builder.Property(schoolBook => schoolBook.SchoolBookType)
             .IsRequired();
+
+        builder.ToTable("SchoolBooks");
     }
 }

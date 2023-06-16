@@ -70,21 +70,16 @@ public class PublicationService : IPublicationService
         return result;
     }
 
-    public async Task<ICollection<PublicationDto>> GetAllAsync(string userId)
+    public async Task<List<object>> GetAllAsync(string userId)
     {
-        ICollection<PublicationDto> result = new List<PublicationDto>();
+        List<object> result = new List<object>();
 
         try
         {
             var publications = await _repository.GetAllAsync(userId);
-            return publications.Select<Publication, PublicationDto>(publication => publication switch
-            {
-                Article article => _mapper.Map<ArticleDto>(article),
-                Monograph monograph => _mapper.Map<MonographDto>(monograph),
-                LectureTheses lectureTheses => _mapper.Map<LectureThesesDto>(lectureTheses),
-                SchoolBook schoolBook => _mapper.Map<SchoolBookDto>(schoolBook),
-                _ => throw new InvalidOperationException($"Unable to detect the type {publication.GetType().Name}")
-            }).ToList();
+            var dtos = _mapper.Map<ICollection<PublicationDto>>(publications);
+            var objectDtos = dtos.Select(dto => (object)dto).ToList();
+            return objectDtos;
         }
         catch (Exception e)
         {

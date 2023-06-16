@@ -9,8 +9,27 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        CreateMap<ApplicationUser, UserMainInfoDto>()
+            .ForMember(dto => dto.Gender, opts => opts.MapFrom(user => user.Gender.GetDisplayAttribute()))
+            .ForMember(dto => dto.Department, opts => opts.MapFrom(user => user.Department.Title));
+        CreateMap<ApplicationUser, UserNameAndAvatarDto>();
+        CreateMap<ApplicationUser, ShortUserDto>();
+        CreateMap<ApplicationUser, BriefUserProfileDto>()
+            .ForMember(dto => dto.Department,
+                opts => opts.MapFrom(user => user.Department!.Title));
         CreateMap<ScientometricDbProfileDto, ScientometricDbProfile>()
             .ReverseMap();
+        CreateMap<Publication, PublicationDto>()
+            .ForMember(dto => dto.PublicationType, opts => opts.MapFrom(p => p.GetType().Name))
+            .IncludeAllDerived();
+        CreateMap<Article, ArticleDto>()
+            .IncludeBase<Publication, PublicationDto>();
+        CreateMap<Monograph, MonographDto>()
+            .IncludeBase<Publication, PublicationDto>();
+        CreateMap<SchoolBook, SchoolBookDto>()
+            .IncludeBase<Publication, PublicationDto>();
+        CreateMap<LectureTheses, LectureThesesDto>()
+            .IncludeBase<Publication, PublicationDto>();
         CreateMap<NewArticleDto, Article>()
             .ForMember(article => article.Authors,
                 options => options.Ignore());
@@ -33,14 +52,7 @@ public class AutoMapperProfile : Profile
         CreateMap<NewSchoolBookDto, SchoolBook>()
             .ForMember(article => article.Authors,
             options => options.Ignore());
-        CreateMap<ApplicationUser, UserMainInfoDto>()
-            .ForMember(dto => dto.Gender, opts => opts.MapFrom(user => user.Gender.GetDisplayAttribute()))
-            .ForMember(dto => dto.Department, opts => opts.MapFrom(user => user.Department.Title));
-        CreateMap<ApplicationUser, UserNameAndAvatarDto>();
-        CreateMap<ApplicationUser, ShortUserDto>();
-        CreateMap<ApplicationUser, BriefUserProfileDto>()
-            .ForMember(dto => dto.Department,
-                opts => opts.MapFrom(user => user.Department!.Title));
+        
         CreateMap<Publication, ShortPublicationDto>();
         CreateMap<NewResearchWorkDto, ResearchWork>()
             .ForMember(researchWork => researchWork.Performers, opts => opts.Ignore())

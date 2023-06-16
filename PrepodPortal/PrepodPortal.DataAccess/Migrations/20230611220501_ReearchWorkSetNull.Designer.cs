@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrepodPortal.DataAccess;
 
@@ -11,9 +12,10 @@ using PrepodPortal.DataAccess;
 namespace PrepodPortal.DataAccess.Migrations
 {
     [DbContext(typeof(PrepodPortalDbContext))]
-    partial class PrepodPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230611220501_ReearchWorkSetNull")]
+    partial class ReearchWorkSetNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -590,6 +592,10 @@ namespace PrepodPortal.DataAccess.Migrations
                     b.Property<int?>("PrintedAuthorPagesCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("PublicationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PublishedLocation")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -616,6 +622,8 @@ namespace PrepodPortal.DataAccess.Migrations
                     b.HasIndex("ResearchWorkId");
 
                     b.ToTable("Publications");
+
+                    b.HasDiscriminator<string>("PublicationType").HasValue("Publication");
                 });
 
             modelBuilder.Entity("PrepodPortal.DataAccess.Entities.ResearchWork", b =>
@@ -776,15 +784,18 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<string>("Issue")
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("Article_Issue");
 
                     b.Property<string>("Number")
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("Article_Number");
 
                     b.Property<string>("PageNumbers")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("Article_PageNumbers");
 
                     b.Property<string>("ScientometricDb")
                         .HasMaxLength(50)
@@ -795,13 +806,15 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<string>("Tome")
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("Article_Tome");
 
                     b.Property<string>("Url")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Article_Url");
 
-                    b.ToTable("Articles", (string)null);
+                    b.HasDiscriminator().HasValue("Article");
                 });
 
             modelBuilder.Entity("PrepodPortal.DataAccess.Entities.LectureTheses", b =>
@@ -814,7 +827,8 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<string>("Isbn")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("LectureTheses_Isbn");
 
                     b.Property<string>("Issue")
                         .HasMaxLength(10)
@@ -840,7 +854,7 @@ namespace PrepodPortal.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.ToTable("LectureTheses", (string)null);
+                    b.HasDiscriminator().HasValue("LectureTheses");
                 });
 
             modelBuilder.Entity("PrepodPortal.DataAccess.Entities.Monograph", b =>
@@ -862,7 +876,7 @@ namespace PrepodPortal.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.ToTable("Monographs", (string)null);
+                    b.HasDiscriminator().HasValue("Monograph");
                 });
 
             modelBuilder.Entity("PrepodPortal.DataAccess.Entities.SchoolBook", b =>
@@ -874,7 +888,8 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<string>("Isbn")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("SchoolBook_Isbn");
 
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
@@ -888,12 +903,13 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<string>("PublisherTitle")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("SchoolBook_PublisherTitle");
 
                     b.Property<int>("SchoolBookType")
                         .HasColumnType("int");
 
-                    b.ToTable("SchoolBooks", (string)null);
+                    b.HasDiscriminator().HasValue("SchoolBook");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1058,42 +1074,6 @@ namespace PrepodPortal.DataAccess.Migrations
                     b.Navigation("ResearchWork");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PrepodPortal.DataAccess.Entities.Article", b =>
-                {
-                    b.HasOne("PrepodPortal.DataAccess.Entities.Publication", null)
-                        .WithOne()
-                        .HasForeignKey("PrepodPortal.DataAccess.Entities.Article", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PrepodPortal.DataAccess.Entities.LectureTheses", b =>
-                {
-                    b.HasOne("PrepodPortal.DataAccess.Entities.Publication", null)
-                        .WithOne()
-                        .HasForeignKey("PrepodPortal.DataAccess.Entities.LectureTheses", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PrepodPortal.DataAccess.Entities.Monograph", b =>
-                {
-                    b.HasOne("PrepodPortal.DataAccess.Entities.Publication", null)
-                        .WithOne()
-                        .HasForeignKey("PrepodPortal.DataAccess.Entities.Monograph", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PrepodPortal.DataAccess.Entities.SchoolBook", b =>
-                {
-                    b.HasOne("PrepodPortal.DataAccess.Entities.Publication", null)
-                        .WithOne()
-                        .HasForeignKey("PrepodPortal.DataAccess.Entities.SchoolBook", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrepodPortal.DataAccess.Entities.ApplicationUser", b =>

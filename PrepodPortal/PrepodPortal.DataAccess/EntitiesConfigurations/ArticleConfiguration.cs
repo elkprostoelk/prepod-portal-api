@@ -34,5 +34,7 @@ public class ArticleConfiguration : IEntityTypeConfiguration<Article>
 
         builder.Property(article => article.ScientometricDb)
             .HasMaxLength(50);
+
+        builder.ToTable("Articles");
     }
 }

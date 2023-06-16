@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrepodPortal.DataAccess;
 
@@ -11,9 +12,10 @@ using PrepodPortal.DataAccess;
 namespace PrepodPortal.DataAccess.Migrations
 {
     [DbContext(typeof(PrepodPortalDbContext))]
-    partial class PrepodPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230616194733_TPHToTPT")]
+    partial class TPHToTPT
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -589,6 +591,10 @@ namespace PrepodPortal.DataAccess.Migrations
 
                     b.Property<int?>("PrintedAuthorPagesCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("PublicationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PublishedLocation")
                         .HasMaxLength(100)

@@ -19,5 +19,7 @@ public class MonographConfiguration : IEntityTypeConfiguration<Monograph>
 
         builder.Property(monograph => monograph.GryphGiven)
             .HasMaxLength(100);
+
+        builder.ToTable("Monographs");
     }
 }

@@ -5,7 +5,14 @@ namespace PrepodPortal.Common.Extensions;
 
 public static class EnumExtensions
 {
-    public static string? GetDisplayAttribute(this Enum value) =>
-        value.GetType().GetMember(value.ToString())
-            .First().GetCustomAttribute<DisplayAttribute>()?.GetName();
+    public static string? GetDisplayAttribute(this Enum value)
+    {
+        var fieldInfo = value.GetType().GetField(value.ToString());
+        var displayAttribute = fieldInfo.GetCustomAttribute<DisplayAttribute>();
+
+        if (displayAttribute != null)
+            return displayAttribute.Name;
+
+        return value.ToString();
+    }
 }

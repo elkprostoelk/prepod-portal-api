@@ -21,6 +21,7 @@ public class AutoMapperProfile : Profile
             .ReverseMap();
         CreateMap<Publication, PublicationDto>()
             .ForMember(dto => dto.PublicationType, opts => opts.MapFrom(p => p.GetType().Name))
+            .ForMember(dto => dto.Authors, opts => opts.MapFrom(p => p.Authors.Select(x => x.Name)))
             .IncludeAllDerived();
         CreateMap<Article, ArticleDto>()
             .IncludeBase<Publication, PublicationDto>();

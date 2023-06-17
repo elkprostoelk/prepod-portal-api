@@ -22,6 +22,6 @@
 
         public long? ResearchWorkId { get; set; }
 
-        public ICollection<ShortUserDto> Authors { get; set; }
+        public ICollection<string> Authors { get; set; }
     }
 }

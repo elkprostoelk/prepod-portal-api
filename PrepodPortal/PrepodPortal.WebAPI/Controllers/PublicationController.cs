@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace PrepodPortal.WebAPI.Controllers
 {

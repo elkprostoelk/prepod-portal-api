@@ -33,10 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\PrepodPortal.Common\PrepodPortal.Common.csproj" />
       <ProjectReference Include="..\PrepodPortal.Core\PrepodPortal.Core.csproj" />
       <ProjectReference Include="..\PrepodPortal.DataAccess\PrepodPortal.DataAccess.csproj" />

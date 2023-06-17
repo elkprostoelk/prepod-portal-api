@@ -31,6 +31,8 @@ public class PrepodPortalDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Subject> Subjects { get; set; }
 
+    public DbSet<QualificationIncrease> QualificationIncreases { get; set; }
+
     public PrepodPortalDbContext(DbContextOptions<PrepodPortalDbContext> options)
         : base(options)
     {

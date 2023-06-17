@@ -41,6 +41,8 @@ public class ApplicationUser : IdentityUser
     
     public ICollection<DissertationDefense> DissertationDefenses { get; set; }
 
+    public ICollection<QualificationIncrease> QualificationIncreases { get; set; }
+
     public ICollection<Subject> Subjects { get; set; }
 
     public Department? Department { get; set; }

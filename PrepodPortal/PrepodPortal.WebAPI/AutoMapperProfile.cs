@@ -24,7 +24,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dto => dto.Authors, opts => opts.MapFrom(p => p.Authors.Select(x => x.Name)))
             .IncludeAllDerived();
         CreateMap<Article, ArticleDto>()
-            .IncludeBase<Publication, PublicationDto>();
+            .IncludeBase<Publication, PublicationDto>()
+            .ForMember(dto => dto.ArticleType, opts => opts.MapFrom(a => a.ArticleType.GetDisplayAttribute()));
         CreateMap<Monograph, MonographDto>()
             .IncludeBase<Publication, PublicationDto>();
         CreateMap<SchoolBook, SchoolBookDto>()
@@ -61,5 +62,8 @@ public class AutoMapperProfile : Profile
         CreateMap<ResearchWork, ResearchWorkDto>()
             .ForMember(dto => dto.Performers, opts => opts.MapFrom(researchWork => researchWork.Performers))
             .ForMember(dto => dto.Publications, opts => opts.MapFrom(researchWork => researchWork.Publications));
+
+        CreateMap<QualificationIncrease, QualificationIncreaseDto>()
+            .ForMember(dto => dto.Type, opts => opts.MapFrom(qi => qi.Type.GetDisplayAttribute()));
     }
 }

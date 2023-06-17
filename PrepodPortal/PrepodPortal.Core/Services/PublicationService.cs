@@ -1,9 +1,7 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
-using PrepodPortal.DataAccess.Entities;
 using PrepodPortal.DataAccess.Interfaces;
 
 namespace PrepodPortal.Core.Services;

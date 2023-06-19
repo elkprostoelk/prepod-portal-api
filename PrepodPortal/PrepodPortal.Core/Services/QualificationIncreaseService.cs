@@ -22,6 +22,51 @@ namespace PrepodPortal.Core.Services
             _logger = logger;
         }
 
+        public async Task<ServiceResult> DeleteAsync(long id)
+        {
+            var result = new ServiceResult();
+
+            try
+            {
+                var qualIncrease = await _repository.GetAsync(id);
+                if (qualIncrease is null)
+                {
+                    result.IsSuccessful = false;
+                    result.Errors.Add("This qualification increase does not exist!");
+                }
+                else
+                {
+                    var deleted = await _repository.DeleteAsync(qualIncrease);
+                    if (!deleted)
+                    {
+                        result.IsSuccessful = false;
+                        result.Errors.Add("Failed to delete!");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "An exception occured when executing the service");
+                result.IsSuccessful = false;
+                result.Errors.Add("Deleting failed!");
+            }
+
+            return result;
+        }
+
+        public async Task<bool> ExistsAsync(long id)
+        {
+            try
+            {
+                return await _repository.ExistsAsync(id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "An exception occured when executing the service");
+                return false;
+            }
+        }
+
         public async Task<ICollection<QualificationIncreaseDto>> GetAllAsync(string userId)
         {
             var result = new List<QualificationIncreaseDto>();

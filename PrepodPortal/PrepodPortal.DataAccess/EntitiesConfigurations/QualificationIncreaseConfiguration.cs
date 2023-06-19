@@ -16,7 +16,7 @@ namespace PrepodPortal.DataAccess.EntitiesConfigurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.InternshipTheme)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(200);
 
             builder.Property(x => x.OrderNumber)

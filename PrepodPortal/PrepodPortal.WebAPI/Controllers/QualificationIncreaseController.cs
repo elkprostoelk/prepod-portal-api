@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PrepodPortal.Common.DTO;
 using PrepodPortal.Core.Interfaces;
 
 namespace PrepodPortal.WebAPI.Controllers
@@ -29,6 +31,22 @@ namespace PrepodPortal.WebAPI.Controllers
 
             var qualificationIncreases = await _service.GetAllAsync(userId);
             return Ok(qualificationIncreases);
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteQualificationIncrease(long id)
+        {
+            var qualIncreaseExists = await _service.ExistsAsync(id);
+            if (!qualIncreaseExists)
+            {
+                return NotFound("This qualification increase record does not exist!");
+            }
+
+            var result = await _service.DeleteAsync(id);
+            return result.IsSuccessful
+                ? NoContent()
+                : BadRequest(result.Errors);
         }
     } 
 }
